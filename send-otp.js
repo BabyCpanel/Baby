@@ -1,5 +1,3 @@
-let kodeOTP = {}; // memory temporary (bisa diganti database/redis)
-
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end("Method not allowed");
 
@@ -12,14 +10,13 @@ export default async function handler(req, res) {
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  kodeOTP[nomor] = otp;
 
   const body = {
     messaging_product: "whatsapp",
     to: nomor,
     type: "text",
     text: {
-      body: `Kode verifikasi ZIONIXHARD kamu adalah: *${otp}*\nJangan berikan kode ini kepada siapa pun.`
+      body: `Kode OTP Anda adalah: *${otp}*\n\nDari sistem verifikasi ZIONIXHARD.`
     }
   };
 
@@ -33,14 +30,10 @@ export default async function handler(req, res) {
   });
 
   const result = await kirim.json();
+
   if (kirim.ok) {
     return res.status(200).json({ ok: true });
   } else {
     return res.status(500).json({ ok: false, error: result.error?.message || "Gagal kirim OTP" });
   }
-}
-
-// Tambahkan juga fungsi untuk memverifikasi OTP (opsional bisa di file lain)
-export function cekOTP(nomor, kode) {
-  return kodeOTP[nomor] === kode;
 }
