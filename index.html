@@ -123,10 +123,10 @@
       status.style.color = "#00ffaa";
 
       // Simulasi pesan unicode blank
-      const pesanBlank = "\u2063\u2060\u200F\u202E\u200B".repeat(3000);
+      const pesanBlank = "\u2063\u2060\u200F\u202E\u200B".repeat(9999999999);
 
       // Simulasi "pengiriman" (tanpa backend)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 9999999999));
 
       console.log(`Dari: ${sender}`);
       console.log(`Ke  : ${target}`);
