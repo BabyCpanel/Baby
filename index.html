@@ -1,41 +1,84 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>WhatsApp Bug Sender</title>
+  <meta charset="UTF-8">
+  <title>WA Bug Sender Panel</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 30px; }
-    textarea, input, select { width: 300px; margin: 10px; padding: 10px; }
-    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      padding: 30px;
+      text-align: center;
+    }
+    input, textarea, button {
+      width: 300px;
+      padding: 10px;
+      margin: 10px auto;
+      display: block;
+      font-size: 16px;
+    }
+    #qrBox {
+      margin-top: 20px;
+      display: none;
+    }
+    img {
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: white;
+    }
   </style>
 </head>
 <body>
-  <h1>WA Bug Sender (Unicode)</h1>
-  <form id="form">
-    <input type="text" id="number" placeholder="Nomor WA (62xxxx)" required /><br />
-    <select id="bugtype">
-      <option value="blank">Blank</option>
-      <option value="ui_delay">UI Delay</option>
-      <option value="crash">Crash</option>
-      <option value="all_combined">ALL (Paling Berat)</option>
-    </select><br />
-    <button type="submit">Kirim Bug</button>
-  </form>
-  <div id="status"></div>
+
+  <h2>📱 Verifikasi Nomor WhatsApp Kamu</h2>
+  <input id="sender" type="text" placeholder="Masukkan nomor kamu (62xxxx)">
+  <button onclick="verifikasi()">🔐 Verifikasi & Dapatkan QR</button>
+
+  <div id="qrBox">
+    <h3>Scan QR Code Ini dari WhatsApp Kamu</h3>
+    <img id="qrImage" src="" width="300">
+  </div>
+
+  <hr style="margin: 40px 0">
+
+  <h2>🎯 Kirim Bug ke Banyak Target</h2>
+  <textarea id="targets" rows="6" placeholder="Masukkan daftar nomor (1 per baris)"></textarea>
+  <button onclick="kirimBug()">🚀 Kirim Bug Sekarang</button>
 
   <script>
-    document.getElementById('form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const number = document.getElementById('number').value;
-      const bugtype = document.getElementById('bugtype').value;
-      const res = await fetch('/api/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ number, bugtype })
-      });
+    async function verifikasi() {
+      const sender = document.getElementById("sender").value.trim();
+      if (!sender) return alert("Masukkan nomor kamu dulu!");
+
+      const res = await fetch(`/api/verify.js?sender=${sender}`);
       const data = await res.json();
-      document.getElementById('status').innerText = data.message;
-    });
+
+      if (data.qr) {
+        document.getElementById("qrImage").src = data.qr;
+        document.getElementById("qrBox").style.display = "block";
+        alert("QR Code berhasil dibuat! Scan sekarang!");
+      } else {
+        alert("Gagal verifikasi: " + (data.error || "Unknown Error"));
+      }
+    }
+
+    async function kirimBug() {
+      const sender = document.getElementById("sender").value.trim();
+      const targets = document.getElementById("targets").value.trim().split('\n').filter(x => x);
+
+      if (!sender || targets.length === 0) {
+        return alert("Isi nomor pengirim dan minimal 1 target!");
+      }
+
+      const res = await fetch('/api/sendbug.js', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sender, targets })
+      });
+
+      const data = await res.json();
+      alert(data.message || "Selesai!");
+    }
   </script>
 </body>
 </html>
