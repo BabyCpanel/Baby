@@ -1,19 +1,29 @@
+// /api/add.js
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { join } from 'path';
+
+const DB_PATH = join('/tmp', 'targets.json');
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
+    return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
   }
 
-  const { number, list, message } = req.body;
-  const targetList = list || (number ? [number] : []);
+  const { number } = req.body;
 
-  if (!Array.isArray(targetList) || targetList.length === 0) {
+  if (!number || typeof number !== 'string' || !number.startsWith('62')) {
     return res.status(400).json({ ok: false, error: 'Nomor tidak valid' });
   }
 
-  // Simulasi pengiriman (testing dummy dulu)
-  console.log('Mengirim bug:', message);
-  console.log('Ke nomor:', targetList);
+  let list = [];
+  if (existsSync(DB_PATH)) {
+    list = JSON.parse(readFileSync(DB_PATH));
+  }
 
-  // Kirim JSON response sukses
-  return res.status(200).json({ ok: true, sent: targetList.length });
+  if (!list.includes(number)) {
+    list.push(number);
+    writeFileSync(DB_PATH, JSON.stringify(list));
+  }
+
+  return res.status(200).json({ ok: true, total: list.length });
 }
