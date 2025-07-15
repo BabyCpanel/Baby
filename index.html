@@ -1,83 +1,130 @@
-<!DOCTYPE html><html lang="id">
+
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>🔐 All‑in‑One Encryption / Hash Tool</title>
-  <!-- CryptoJS -->
-  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+  <title>Full Crypto Tools</title>
   <style>
-    :root { --bg:#0a0a0a; --fg:#0f0; --border:#0f0; }
-    *{box-sizing:border-box}body{margin:0;font-family:monospace;background:var(--bg);color:var(--fg);padding:24px;line-height:1.4}
-    h1{margin:0 0 16px}
-    .field{margin-bottom:12px}
-    input,textarea,select,button{width:100%;padding:8px;background:#000;color:var(--fg);border:1px solid var(--border);border-radius:4px}
-    button{cursor:pointer;transition:0.2s}button:hover{opacity:.8}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .drop-zone{border:2px dashed var(--border);padding:24px;text-align:center;border-radius:8px;cursor:pointer}
-    .hidden{display:none}
-    .footer{margin-top:32px;font-size:.8rem;opacity:.7}
+    body { font-family: Arial; background: #f4f4f4; margin: 20px; }
+    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
+    textarea, input, select { width: 100%; padding: 8px; margin-top: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    h2 { color: #333; }
   </style>
 </head>
 <body>
-  <h1>🔐 All‑in‑One Encryption / Hash Tool</h1>  <!-- TEXT SECTION -->  <section>
-    <div class="field"><label for="text">📝 Teks</label><textarea id="text" rows="4" placeholder="Masukkan teks…"></textarea></div>
-    <div class="row">
-      <div class="field"><label for="key">🔑 Password / Kunci</label><input id="key" type="text" placeholder="Masukkan kunci (jika diperlukan)"/></div>
-      <div class="field"><label for="method">⚙️ Metode</label>
-        <select id="method">
-          <optgroup label="Encryption / Decryption">
-            <option value="AES">AES</option>
-            <option value="DES">DES</option>
-            <option value="3DES">Triple DES</option>
-            <option value="RC4">RC4</option>
-            <option value="Rabbit">Rabbit</option>
-            <option value="XOR">XOR (Simple)</option>
-            <option value="Base64Encode">Base64 Encode</option>
-            <option value="Base64Decode">Base64 Decode</option>
-          </optgroup>
-          <optgroup label="Hash">
-            <option value="SHA512">SHA‑512</option>
-            <option value="SHA256">SHA‑256</option>
-            <option value="SHA1">SHA‑1</option>
-            <option value="MD5">MD5</option>
-          </optgroup>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <button onclick="encrypt()">🔐 Enkripsi / Hash</button>
-      <button onclick="decrypt()">🔓 Dekripsi</button>
-    </div>
-    <div class="field"><label for="result">📄 Hasil</label><textarea id="result" rows="6" readonly></textarea></div>
-  </section>  <hr style="margin:32px 0;border-color:#222">  <!-- FILE SECTION -->  <section>
-    <h2>📁 File Encryption / Hash</h2>
-    <div id="dropZone" class="drop-zone">📂 Drop file di sini atau klik untuk memilih</div>
-    <input id="fileInput" class="hidden" type="file" />
-    <div class="field"><label for="fileKey">🔑 Password (AES‑256)</label><input id="fileKey" type="text" placeholder="Masukkan password untuk enkripsi file"/></div>
-    <div class="row">
-      <button onclick="encryptFile()">🔐 Enkripsi File (AES)</button>
-      <button onclick="decryptFile()">🔓 Dekripsi File (AES)</button>
-    </div>
-    <div class="field"><label for="fileHashAlgo">⚙️ Algoritma Hash File</label>
-      <select id="fileHashAlgo">
-        <option value="SHA512">SHA‑512</option>
-        <option value="SHA256">SHA‑256</option>
-        <option value="SHA1">SHA‑1</option>
-        <option value="MD5">MD5</option>
-      </select>
-    </div>
-    <button onclick="hashFile()">🔍 Hitung Hash File</button>
-    <div id="fileResult" class="field"></div>
-  </section>  <div class="footer">© 2025 All‑in‑One Encrypt Tool – client‑side only, tidak ada data yang dikirim ke server.</div><script>
-/***************** UTIL *****************/
-function xor(text,key){let r="";for(let i=0;i<text.length;i++){r+=String.fromCharCode(text.charCodeAt(i)^key.charCodeAt(i%key.length));}return r;}
-function alertIf(cond,msg){if(cond){alert(msg);return true;}return false;}
-/***************** TEXT *****************/
-function encrypt(){const t=document.getElementById("text").value;const k=document.getElementById("key").value;const m=document.getElementById("method").value;if(alertIf(!t,"Teks wajib diisi."))return;let out="";switch(m){case"AES":if(alertIf(!k,"Password wajib untuk AES"))return;out=CryptoJS.AES.encrypt(t,k).toString();break;case"DES":if(alertIf(!k,"Password wajib untuk DES"))return;out=CryptoJS.DES.encrypt(t,k).toString();break;case"3DES":if(alertIf(!k,"Password wajib untuk 3DES"))return;out=CryptoJS.TripleDES.encrypt(t,k).toString();break;case"RC4":if(alertIf(!k,"Password wajib untuk RC4"))return;out=CryptoJS.RC4.encrypt(t,k).toString();break;case"Rabbit":if(alertIf(!k,"Password wajib untuk Rabbit"))return;out=CryptoJS.Rabbit.encrypt(t,k).toString();break;case"XOR":if(alertIf(!k,"Password wajib untuk XOR"))return;out=btoa(xor(t,k));break;case"Base64Encode":out=btoa(t);break;case"SHA512":out=CryptoJS.SHA512(t).toString();break;case"SHA256":out=CryptoJS.SHA256(t).toString();break;case"SHA1":out=CryptoJS.SHA1(t).toString();break;case"MD5":out=CryptoJS.MD5(t).toString();break;default:out="Metode tidak dikenali";}document.getElementById("result").value=out;}
-function decrypt(){const t=document.getElementById("text").value;const k=document.getElementById("key").value;const m=document.getElementById("method").value;if(alertIf(!t,"Teks wajib diisi."))return;let out="";try{switch(m){case"AES":out=CryptoJS.AES.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"DES":out=CryptoJS.DES.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"3DES":out=CryptoJS.TripleDES.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"RC4":out=CryptoJS.RC4.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"Rabbit":out=CryptoJS.Rabbit.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"XOR":out=xor(atob(t),k);break;case"Base64Decode":out=atob(t);break;default:out="Dekripsi tidak tersedia untuk metode ini.";}}catch(e){out="❌ Gagal dekripsi.";}document.getElementById("result").value=out||"❌ Gagal dekripsi.";}
-/***************** FILE HANDLING *****************/
-let selectedFile=null;const fileInput=document.getElementById("fileInput");const dropZone=document.getElementById("dropZone");dropZone.addEventListener("click",()=>fileInput.click());dropZone.addEventListener("dragover",e=>{e.preventDefault();dropZone.style.opacity=.7});dropZone.addEventListener("dragleave",()=>dropZone.style.opacity=1);dropZone.addEventListener("drop",e=>{e.preventDefault();dropZone.style.opacity=1;handleFile(e.dataTransfer.files[0]);});fileInput.addEventListener("change",e=>handleFile(e.target.files[0]));function handleFile(f){if(!f)return;selectedFile=f;dropZone.textContent="📄 "+f.name+" ("+f.size+" bytes) dipilih";document.getElementById("fileResult").textContent="";}
-function encryptFile(){if(alertIf(!selectedFile,"Pilih file terlebih dahulu."))return;const key=document.getElementById("fileKey").value;if(alertIf(!key,"Password wajib untuk enkripsi file."))return;const reader=new FileReader();reader.onload=e=>{const wordArray=CryptoJS.lib.WordArray.create(e.target.result);const encrypted=CryptoJS.AES.encrypt(wordArray,key).toString();downloadString(encrypted,selectedFile.name+".enc");};reader.readAsArrayBuffer(selectedFile);}
-function decryptFile(){if(alertIf(!selectedFile,"Pilih file terenkripsi terlebih dahulu."))return;const key=document.getElementById("fileKey").value;if(alertIf(!key,"Password wajib untuk dekripsi file."))return;const reader=new FileReader();reader.onload=e=>{try{const decrypted=CryptoJS.AES.decrypt(e.target.result,key);const typedArray=wordArrayToUint8(decrypted);downloadBlob(new Blob([typedArray]),selectedFile.name.replace(/\.enc$/i,".dec"));}catch(err){alert("Gagal dekripsi: kunci salah atau file rusak.");}};reader.readAsText(selectedFile);}function wordArrayToUint8(wordArray){const words=wordArray.words;const sigBytes=wordArray.sigBytes;const u8=new Uint8Array(sigBytes);for(let i=0;i<sigBytes;i++){u8[i]=(words[i>>>2]>>>24-((i%4)*8))&0xff;}return u8;}
-function hashFile(){if(alertIf(!selectedFile,"Pilih file terlebih dahulu."))return;const algo=document.getElementById("fileHashAlgo").value;const reader=new FileReader();reader.onload=e=>{const wordArray=CryptoJS.lib.WordArray.create(e.target.result);let hash="";switch(algo){case"SHA512":hash=CryptoJS.SHA512(wordArray).toString();break;case"SHA256":hash=CryptoJS.SHA256(wordArray).toString();break;case"SHA1":hash=CryptoJS.SHA1(wordArray).toString();break;case"MD5":hash=CryptoJS.MD5(wordArray).toString();break;}document.getElementById("fileResult").textContent=algo+":\n"+hash;};reader.readAsArrayBuffer(selectedFile);}function downloadString(str,filename){const blob=new Blob([str]);downloadBlob(blob,filename);}function downloadBlob(blob,filename){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},0);}
-</script></body>
+<div class="container">
+  <h2>🔐 Full Crypto Tools (Encrypt, Decrypt, Crack)</h2>
+  <label>Upload File atau Masukkan Teks:</label>
+  <input type="file" id="fileInput"><br>
+  <textarea id="inputText" placeholder="Tulis teks di sini..."></textarea>
+  <label>Pilih Algoritma:</label>
+  <select id="algorithm">
+    <option value="aes">AES</option>
+    <option value="des">DES</option>
+    <option value="rc4">RC4</option>
+    <option value="xor">XOR</option>
+    <option value="caesar">Caesar Cipher</option>
+    <option value="vigenere">Vigenère Cipher</option>
+    <option value="base64">Base64</option>
+    <option value="md5">MD5 (Hash)</option>
+    <option value="sha1">SHA1 (Hash)</option>
+    <option value="sha256">SHA256 (Hash)</option>
+    <option value="rot13">ROT13</option>
+    <option value="hex">Hex Encode/Decode</option>
+  </select>
+  <input type="text" id="key" placeholder="Masukkan key (jika perlu)">
+  <button onclick="process('encrypt')">Encrypt</button>
+  <button onclick="process('decrypt')">Decrypt / Crack</button>
+  <h3>Hasil:</h3>
+  <textarea id="outputText" readonly></textarea>
+  <button onclick="download()">💾 Simpan Hasil</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('inputText').value = e.target.result;
+  };
+  reader.readAsText(file);
+});
+
+function process(mode) {
+  const input = document.getElementById('inputText').value;
+  const algo = document.getElementById('algorithm').value;
+  const key = document.getElementById('key').value;
+  let output = '';
+
+  try {
+    if (algo === 'aes') {
+      output = (mode === 'encrypt') ? CryptoJS.AES.encrypt(input, key).toString()
+                                     : CryptoJS.AES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+    } else if (algo === 'des') {
+      output = (mode === 'encrypt') ? CryptoJS.DES.encrypt(input, key).toString()
+                                     : CryptoJS.DES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+    } else if (algo === 'rc4') {
+      output = (mode === 'encrypt') ? CryptoJS.RC4.encrypt(input, key).toString()
+                                     : CryptoJS.RC4.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+    } else if (algo === 'xor') {
+      if (!key) return alert("Masukkan key!");
+      output = Array.from(input).map((c, i) => 
+        String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join("");
+    } else if (algo === 'caesar') {
+      if (mode === 'encrypt') {
+        const shift = parseInt(key) || 3;
+        output = input.replace(/[a-z]/gi, c => {
+          const base = c <= 'Z' ? 65 : 97;
+          return String.fromCharCode((c.charCodeAt(0) - base + shift) % 26 + base);
+        });
+      } else {
+        output = "";
+        for (let s = 1; s <= 25; s++) {
+          output += `[Shift ${s}] ` + input.replace(/[a-z]/gi, c => {
+            const base = c <= 'Z' ? 65 : 97;
+            return String.fromCharCode((c.charCodeAt(0) - base - s + 26) % 26 + base);
+          }) + '\n';
+        }
+      }
+    } else if (algo === 'vigenere') {
+      if (!key) return alert("Masukkan key!");
+      output = input.split('').map((c, i) => {
+        const k = key.charCodeAt(i % key.length);
+        return String.fromCharCode(mode === 'encrypt' ?
+          (c.charCodeAt(0) + k) % 256 :
+          (c.charCodeAt(0) - k + 256) % 256);
+      }).join("");
+    } else if (algo === 'base64') {
+      output = (mode === 'encrypt') ? btoa(input) : atob(input);
+    } else if (algo === 'md5') {
+      output = CryptoJS.MD5(input).toString();
+    } else if (algo === 'sha1') {
+      output = CryptoJS.SHA1(input).toString();
+    } else if (algo === 'sha256') {
+      output = CryptoJS.SHA256(input).toString();
+    } else if (algo === 'rot13') {
+      output = input.replace(/[a-zA-Z]/g, c =>
+        String.fromCharCode(c.charCodeAt(0) + (c.toLowerCase() < 'n' ? 13 : -13)));
+    } else if (algo === 'hex') {
+      output = (mode === 'encrypt') ? Array.from(input).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
+                                    : input.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join("");
+    }
+  } catch (e) {
+    output = "⚠️ Error: " + e.message;
+  }
+
+  document.getElementById('outputText').value = output;
+}
+
+function download() {
+  const blob = new Blob([document.getElementById("outputText").value], {type: "text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "hasil_enkripsi.txt";
+  a.click();
+}
+</script>
+</body>
 </html>
