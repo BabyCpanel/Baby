@@ -1,129 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Full Crypto Tools</title>
+  <title>Brute Force Login (Simulasi Aman)</title>
   <style>
-    body { font-family: Arial; background: #f4f4f4; margin: 20px; }
-    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
-    textarea, input, select { width: 100%; padding: 8px; margin-top: 10px; }
-    button { padding: 10px 20px; margin-top: 10px; }
-    h2 { color: #333; }
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    input, button { padding: 10px; margin: 10px; width: 300px; }
+    #log { margin-top: 20px; font-family: monospace; text-align: left; white-space: pre-wrap; }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>🔐 Full Crypto Tools (Encrypt, Decrypt, Crack)</h2>
-  <label>Upload File atau Masukkan Teks:</label>
-  <input type="file" id="fileInput"><br>
-  <textarea id="inputText" placeholder="Tulis teks di sini..."></textarea>
-  <label>Pilih Algoritma:</label>
-  <select id="algorithm">
-    <option value="aes">AES</option>
-    <option value="des">DES</option>
-    <option value="rc4">RC4</option>
-    <option value="xor">XOR</option>
-    <option value="caesar">Caesar Cipher</option>
-    <option value="vigenere">Vigenère Cipher</option>
-    <option value="base64">Base64</option>
-    <option value="md5">MD5 (Hash)</option>
-    <option value="sha1">SHA1 (Hash)</option>
-    <option value="sha256">SHA256 (Hash)</option>
-    <option value="rot13">ROT13</option>
-    <option value="hex">Hex Encode/Decode</option>
-  </select>
-  <input type="text" id="key" placeholder="Masukkan key (jika perlu)">
-  <button onclick="process('encrypt')">Encrypt</button>
-  <button onclick="process('decrypt')">Decrypt / Crack</button>
-  <h3>Hasil:</h3>
-  <textarea id="outputText" readonly></textarea>
-  <button onclick="download()">💾 Simpan Hasil</button>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script>
-document.getElementById('fileInput').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('inputText').value = e.target.result;
-  };
-  reader.readAsText(file);
-});
+  <h2>Brute Force Login Simulator</h2>
 
-function process(mode) {
-  const input = document.getElementById('inputText').value;
-  const algo = document.getElementById('algorithm').value;
-  const key = document.getElementById('key').value;
-  let output = '';
+  <!-- Target login (readonly, anggap ini sistem target buatan sendiri) -->
+  <input id="targetUser" type="text" value="admin" readonly />
+  <input id="targetPass" type="password" value="rahasia123" readonly />
 
-  try {
-    if (algo === 'aes') {
-      output = (mode === 'encrypt') ? CryptoJS.AES.encrypt(input, key).toString()
-                                     : CryptoJS.AES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
-    } else if (algo === 'des') {
-      output = (mode === 'encrypt') ? CryptoJS.DES.encrypt(input, key).toString()
-                                     : CryptoJS.DES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
-    } else if (algo === 'rc4') {
-      output = (mode === 'encrypt') ? CryptoJS.RC4.encrypt(input, key).toString()
-                                     : CryptoJS.RC4.decrypt(input, key).toString(CryptoJS.enc.Utf8);
-    } else if (algo === 'xor') {
-      if (!key) return alert("Masukkan key!");
-      output = Array.from(input).map((c, i) => 
-        String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join("");
-    } else if (algo === 'caesar') {
-      if (mode === 'encrypt') {
-        const shift = parseInt(key) || 3;
-        output = input.replace(/[a-z]/gi, c => {
-          const base = c <= 'Z' ? 65 : 97;
-          return String.fromCharCode((c.charCodeAt(0) - base + shift) % 26 + base);
-        });
-      } else {
-        output = "";
-        for (let s = 1; s <= 25; s++) {
-          output += `[Shift ${s}] ` + input.replace(/[a-z]/gi, c => {
-            const base = c <= 'Z' ? 65 : 97;
-            return String.fromCharCode((c.charCodeAt(0) - base - s + 26) % 26 + base);
-          }) + '\n';
+  <br><br>
+  <button onclick="startBruteForce()">Mulai Brute Force</button>
+
+  <div id="log">Log: </div>
+
+  <script>
+    // Wordlist pengguna dan password (simulasi)
+    const usernames = ["admin", "root", "user"];
+    const passwords = ["123456", "admin123", "rahasia", "rahasia123", "password"];
+
+    function startBruteForce() {
+      const targetUser = document.getElementById('targetUser').value;
+      const targetPass = document.getElementById('targetPass').value;
+      let found = false;
+      let log = "🔍 Mencoba kombinasi login...\n";
+
+      outer:
+      for (let u of usernames) {
+        for (let p of passwords) {
+          log += `⏳ Mencoba: ${u} / ${p}\n`;
+          if (u === targetUser && p === targetPass) {
+            log += `\n✅ Berhasil login dengan:\n👤 Username: ${u}\n🔑 Password: ${p}`;
+            found = true;
+            break outer;
+          }
         }
       }
-    } else if (algo === 'vigenere') {
-      if (!key) return alert("Masukkan key!");
-      output = input.split('').map((c, i) => {
-        const k = key.charCodeAt(i % key.length);
-        return String.fromCharCode(mode === 'encrypt' ?
-          (c.charCodeAt(0) + k) % 256 :
-          (c.charCodeAt(0) - k + 256) % 256);
-      }).join("");
-    } else if (algo === 'base64') {
-      output = (mode === 'encrypt') ? btoa(input) : atob(input);
-    } else if (algo === 'md5') {
-      output = CryptoJS.MD5(input).toString();
-    } else if (algo === 'sha1') {
-      output = CryptoJS.SHA1(input).toString();
-    } else if (algo === 'sha256') {
-      output = CryptoJS.SHA256(input).toString();
-    } else if (algo === 'rot13') {
-      output = input.replace(/[a-zA-Z]/g, c =>
-        String.fromCharCode(c.charCodeAt(0) + (c.toLowerCase() < 'n' ? 13 : -13)));
-    } else if (algo === 'hex') {
-      output = (mode === 'encrypt') ? Array.from(input).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
-                                    : input.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join("");
+
+      if (!found) {
+        log += "\n❌ Tidak ada kombinasi yang cocok.";
+      }
+
+      document.getElementById("log").textContent = log;
     }
-  } catch (e) {
-    output = "⚠️ Error: " + e.message;
-  }
-
-  document.getElementById('outputText').value = output;
-}
-
-function download() {
-  const blob = new Blob([document.getElementById("outputText").value], {type: "text/plain"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "hasil_enkripsi.txt";
-  a.click();
-}
-</script>
+  </script>
 </body>
 </html>
