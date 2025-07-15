@@ -1,55 +1,83 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Kalkulator Cuan PENGU</title>
+  <title>🔐 All‑in‑One Encryption / Hash Tool</title>
+  <!-- CryptoJS -->
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; }
-    input, button { width: 100%; margin: 10px 0; padding: 8px; font-size: 16px; }
-    .result { margin-top: 20px; font-weight: bold; }
+    :root { --bg:#0a0a0a; --fg:#0f0; --border:#0f0; }
+    *{box-sizing:border-box}body{margin:0;font-family:monospace;background:var(--bg);color:var(--fg);padding:24px;line-height:1.4}
+    h1{margin:0 0 16px}
+    .field{margin-bottom:12px}
+    input,textarea,select,button{width:100%;padding:8px;background:#000;color:var(--fg);border:1px solid var(--border);border-radius:4px}
+    button{cursor:pointer;transition:0.2s}button:hover{opacity:.8}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .drop-zone{border:2px dashed var(--border);padding:24px;text-align:center;border-radius:8px;cursor:pointer}
+    .hidden{display:none}
+    .footer{margin-top:32px;font-size:.8rem;opacity:.7}
   </style>
 </head>
 <body>
-  <h2>Kalkulator Cuan PENGU</h2>
-  <label>Jumlah PENGU yang Dimiliki:</label>
-  <input type="number" id="jumlahPengu" value="307.1">
-
-  <label>Harga Beli per PENGU (Rp):</label>
-  <input type="number" id="hargaBeli" value="398">
-
-  <label>Harga Jual Target per PENGU (Rp):</label>
-  <input type="number" id="hargaJual" value="520">
-
-  <button onclick="hitungCuan()">Hitung Cuan</button>
-
-  <div class="result" id="output"></div>
-
-  <script>
-    function hitungCuan() {
-      const jumlah = parseFloat(document.getElementById("jumlahPengu").value);
-      const beli = parseFloat(document.getElementById("hargaBeli").value);
-      const jual = parseFloat(document.getElementById("hargaJual").value);
-
-      const totalModal = jumlah * beli;
-      const totalJualSemua = jumlah * jual;
-      const cuanTotal = totalJualSemua - totalModal;
-
-      const setengah = jumlah / 2;
-      const jualSetengah = setengah * jual;
-      const modalSetengah = setengah * beli;
-      const cuanSetengah = jualSetengah - modalSetengah;
-
-      const output = `
-        📊 Total Modal: Rp${totalModal.toFixed(0)}<br>
-        💯 Jual Semua (${jumlah} PENGU): Rp${totalJualSemua.toFixed(0)} <br>
-        ➕ Cuan Total: <b>Rp${cuanTotal.toFixed(0)}</b><br><br>
-        
-        🔖 Jual 50% (${setengah.toFixed(2)} PENGU): Rp${jualSetengah.toFixed(0)} <br>
-        ➕ Cuan 50%: <b>Rp${cuanSetengah.toFixed(0)}</b>
-      `;
-
-      document.getElementById("output").innerHTML = output;
-    }
-  </script>
-</body>
+  <h1>🔐 All‑in‑One Encryption / Hash Tool</h1>  <!-- TEXT SECTION -->  <section>
+    <div class="field"><label for="text">📝 Teks</label><textarea id="text" rows="4" placeholder="Masukkan teks…"></textarea></div>
+    <div class="row">
+      <div class="field"><label for="key">🔑 Password / Kunci</label><input id="key" type="text" placeholder="Masukkan kunci (jika diperlukan)"/></div>
+      <div class="field"><label for="method">⚙️ Metode</label>
+        <select id="method">
+          <optgroup label="Encryption / Decryption">
+            <option value="AES">AES</option>
+            <option value="DES">DES</option>
+            <option value="3DES">Triple DES</option>
+            <option value="RC4">RC4</option>
+            <option value="Rabbit">Rabbit</option>
+            <option value="XOR">XOR (Simple)</option>
+            <option value="Base64Encode">Base64 Encode</option>
+            <option value="Base64Decode">Base64 Decode</option>
+          </optgroup>
+          <optgroup label="Hash">
+            <option value="SHA512">SHA‑512</option>
+            <option value="SHA256">SHA‑256</option>
+            <option value="SHA1">SHA‑1</option>
+            <option value="MD5">MD5</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <button onclick="encrypt()">🔐 Enkripsi / Hash</button>
+      <button onclick="decrypt()">🔓 Dekripsi</button>
+    </div>
+    <div class="field"><label for="result">📄 Hasil</label><textarea id="result" rows="6" readonly></textarea></div>
+  </section>  <hr style="margin:32px 0;border-color:#222">  <!-- FILE SECTION -->  <section>
+    <h2>📁 File Encryption / Hash</h2>
+    <div id="dropZone" class="drop-zone">📂 Drop file di sini atau klik untuk memilih</div>
+    <input id="fileInput" class="hidden" type="file" />
+    <div class="field"><label for="fileKey">🔑 Password (AES‑256)</label><input id="fileKey" type="text" placeholder="Masukkan password untuk enkripsi file"/></div>
+    <div class="row">
+      <button onclick="encryptFile()">🔐 Enkripsi File (AES)</button>
+      <button onclick="decryptFile()">🔓 Dekripsi File (AES)</button>
+    </div>
+    <div class="field"><label for="fileHashAlgo">⚙️ Algoritma Hash File</label>
+      <select id="fileHashAlgo">
+        <option value="SHA512">SHA‑512</option>
+        <option value="SHA256">SHA‑256</option>
+        <option value="SHA1">SHA‑1</option>
+        <option value="MD5">MD5</option>
+      </select>
+    </div>
+    <button onclick="hashFile()">🔍 Hitung Hash File</button>
+    <div id="fileResult" class="field"></div>
+  </section>  <div class="footer">© 2025 All‑in‑One Encrypt Tool – client‑side only, tidak ada data yang dikirim ke server.</div><script>
+/***************** UTIL *****************/
+function xor(text,key){let r="";for(let i=0;i<text.length;i++){r+=String.fromCharCode(text.charCodeAt(i)^key.charCodeAt(i%key.length));}return r;}
+function alertIf(cond,msg){if(cond){alert(msg);return true;}return false;}
+/***************** TEXT *****************/
+function encrypt(){const t=document.getElementById("text").value;const k=document.getElementById("key").value;const m=document.getElementById("method").value;if(alertIf(!t,"Teks wajib diisi."))return;let out="";switch(m){case"AES":if(alertIf(!k,"Password wajib untuk AES"))return;out=CryptoJS.AES.encrypt(t,k).toString();break;case"DES":if(alertIf(!k,"Password wajib untuk DES"))return;out=CryptoJS.DES.encrypt(t,k).toString();break;case"3DES":if(alertIf(!k,"Password wajib untuk 3DES"))return;out=CryptoJS.TripleDES.encrypt(t,k).toString();break;case"RC4":if(alertIf(!k,"Password wajib untuk RC4"))return;out=CryptoJS.RC4.encrypt(t,k).toString();break;case"Rabbit":if(alertIf(!k,"Password wajib untuk Rabbit"))return;out=CryptoJS.Rabbit.encrypt(t,k).toString();break;case"XOR":if(alertIf(!k,"Password wajib untuk XOR"))return;out=btoa(xor(t,k));break;case"Base64Encode":out=btoa(t);break;case"SHA512":out=CryptoJS.SHA512(t).toString();break;case"SHA256":out=CryptoJS.SHA256(t).toString();break;case"SHA1":out=CryptoJS.SHA1(t).toString();break;case"MD5":out=CryptoJS.MD5(t).toString();break;default:out="Metode tidak dikenali";}document.getElementById("result").value=out;}
+function decrypt(){const t=document.getElementById("text").value;const k=document.getElementById("key").value;const m=document.getElementById("method").value;if(alertIf(!t,"Teks wajib diisi."))return;let out="";try{switch(m){case"AES":out=CryptoJS.AES.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"DES":out=CryptoJS.DES.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"3DES":out=CryptoJS.TripleDES.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"RC4":out=CryptoJS.RC4.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"Rabbit":out=CryptoJS.Rabbit.decrypt(t,k).toString(CryptoJS.enc.Utf8);break;case"XOR":out=xor(atob(t),k);break;case"Base64Decode":out=atob(t);break;default:out="Dekripsi tidak tersedia untuk metode ini.";}}catch(e){out="❌ Gagal dekripsi.";}document.getElementById("result").value=out||"❌ Gagal dekripsi.";}
+/***************** FILE HANDLING *****************/
+let selectedFile=null;const fileInput=document.getElementById("fileInput");const dropZone=document.getElementById("dropZone");dropZone.addEventListener("click",()=>fileInput.click());dropZone.addEventListener("dragover",e=>{e.preventDefault();dropZone.style.opacity=.7});dropZone.addEventListener("dragleave",()=>dropZone.style.opacity=1);dropZone.addEventListener("drop",e=>{e.preventDefault();dropZone.style.opacity=1;handleFile(e.dataTransfer.files[0]);});fileInput.addEventListener("change",e=>handleFile(e.target.files[0]));function handleFile(f){if(!f)return;selectedFile=f;dropZone.textContent="📄 "+f.name+" ("+f.size+" bytes) dipilih";document.getElementById("fileResult").textContent="";}
+function encryptFile(){if(alertIf(!selectedFile,"Pilih file terlebih dahulu."))return;const key=document.getElementById("fileKey").value;if(alertIf(!key,"Password wajib untuk enkripsi file."))return;const reader=new FileReader();reader.onload=e=>{const wordArray=CryptoJS.lib.WordArray.create(e.target.result);const encrypted=CryptoJS.AES.encrypt(wordArray,key).toString();downloadString(encrypted,selectedFile.name+".enc");};reader.readAsArrayBuffer(selectedFile);}
+function decryptFile(){if(alertIf(!selectedFile,"Pilih file terenkripsi terlebih dahulu."))return;const key=document.getElementById("fileKey").value;if(alertIf(!key,"Password wajib untuk dekripsi file."))return;const reader=new FileReader();reader.onload=e=>{try{const decrypted=CryptoJS.AES.decrypt(e.target.result,key);const typedArray=wordArrayToUint8(decrypted);downloadBlob(new Blob([typedArray]),selectedFile.name.replace(/\.enc$/i,".dec"));}catch(err){alert("Gagal dekripsi: kunci salah atau file rusak.");}};reader.readAsText(selectedFile);}function wordArrayToUint8(wordArray){const words=wordArray.words;const sigBytes=wordArray.sigBytes;const u8=new Uint8Array(sigBytes);for(let i=0;i<sigBytes;i++){u8[i]=(words[i>>>2]>>>24-((i%4)*8))&0xff;}return u8;}
+function hashFile(){if(alertIf(!selectedFile,"Pilih file terlebih dahulu."))return;const algo=document.getElementById("fileHashAlgo").value;const reader=new FileReader();reader.onload=e=>{const wordArray=CryptoJS.lib.WordArray.create(e.target.result);let hash="";switch(algo){case"SHA512":hash=CryptoJS.SHA512(wordArray).toString();break;case"SHA256":hash=CryptoJS.SHA256(wordArray).toString();break;case"SHA1":hash=CryptoJS.SHA1(wordArray).toString();break;case"MD5":hash=CryptoJS.MD5(wordArray).toString();break;}document.getElementById("fileResult").textContent=algo+":\n"+hash;};reader.readAsArrayBuffer(selectedFile);}function downloadString(str,filename){const blob=new Blob([str]);downloadBlob(blob,filename);}function downloadBlob(blob,filename){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},0);}
+</script></body>
 </html>
