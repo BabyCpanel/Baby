@@ -1,13 +1,14 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🎮 Multi Game Portal</title>
+  <title>🎮 GAME ZIONIXSZY</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #0f0f1a;
+      background: linear-gradient(120deg, #0f0f1a, #1c1c2e);
       color: white;
       display: flex;
       flex-direction: column;
@@ -15,6 +16,10 @@
     }
     h1 {
       margin: 20px 0;
+      font-size: 2.2em;
+      background: linear-gradient(to right, #00ffff, #ff00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .game-grid {
       display: grid;
@@ -38,6 +43,7 @@
       width: 100%;
       height: 140px;
       object-fit: cover;
+      filter: brightness(0.95);
     }
     .game-card button {
       width: 100%;
@@ -47,12 +53,15 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
+      font-weight: bold;
     }
     iframe {
       width: 90vw;
       height: 80vh;
       border: none;
       margin: 20px 0;
+      border-radius: 12px;
+      box-shadow: 0 0 12px #00000066;
     }
     #game-frame {
       display: none;
@@ -66,31 +75,51 @@
       border: none;
       font-size: 16px;
       border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>🎮 Multi Game Portal</h1>
+  <h1>🎮 GAME ZIONIXSZY</h1>
   <div class="game-grid" id="game-list">
     <div class="game-card">
-      <img src="https://via.placeholder.com/300x140?text=Space+Shooter" alt="Space Shooter">
-      <button onclick="loadGame('https://drayyy.vercel.app/games/spaceshooter.html')">Play Space Shooter</button>
+      <img src="https://cdn.pixabay.com/photo/2022/07/17/09/34/spaceship-7327481_960_720.jpg" alt="Space Shooter">
+      <button onclick="loadGame('https://html5games.github.io/space-invaders/')">Play Space Shooter</button>
     </div>
     <div class="game-card">
-      <img src="https://via.placeholder.com/300x140?text=2048+Game" alt="2048">
-      <button onclick="loadGame('https://drayyy.vercel.app/games/2048.html')">Play 2048</button>
+      <img src="https://play2048.co/meta/apple-touch-icon.png" alt="2048">
+      <button onclick="loadGame('https://play2048.co/')">Play 2048</button>
     </div>
     <div class="game-card">
-      <img src="https://via.placeholder.com/300x140?text=Flappy+Bird" alt="Flappy Bird">
-      <button onclick="loadGame('https://drayyy.vercel.app/games/flappy.html')">Play Flappy Bird</button>
+      <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Flappy_Bird_icon.png" alt="Flappy Bird">
+      <button onclick="loadGame('https://nebez.github.io/floppybird/')">Play Flappy Bird</button>
     </div>
     <div class="game-card">
-      <img src="https://via.placeholder.com/300x140?text=Snake+Classic" alt="Snake">
-      <button onclick="loadGame('https://drayyy.vercel.app/games/snake.html')">Play Snake Classic</button>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Snake_game_play.gif" alt="Snake">
+      <button onclick="loadGame('https://playsnake.org/')">Play Snake Classic</button>
     </div>
-  </div><button id="back-button" onclick="goBack()">🔙 Back to Game List</button>
+    <div class="game-card">
+      <img src="https://cdn.pixabay.com/photo/2020/05/07/10/34/strategy-5140065_960_720.jpg" alt="Chess">
+      <button onclick="loadGame('https://www.chess.com/play/computer')">Play Chess</button>
+    </div>
+    <div class="game-card">
+      <img src="https://cdn.pixabay.com/photo/2020/05/07/09/36/checkers-5139895_960_720.jpg" alt="Checkers">
+      <button onclick="loadGame('https://cardgames.io/checkers/')">Play Checkers</button>
+    </div>
+    <div class="game-card">
+      <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/tetris-306452_960_720.png" alt="Tetris">
+      <button onclick="loadGame('https://tetris.com/play-tetris')">Play Tetris</button>
+    </div>
+    <div class="game-card">
+      <img src="https://cdn.pixabay.com/photo/2016/10/06/00/41/pacman-1711304_960_720.jpg" alt="Pac-Man">
+      <button onclick="loadGame('https://www.retrogames.cc/embed/42435-pac-man.html')">Play Pac-Man</button>
+    </div>
+  </div>
 
-  <iframe id="game-frame"></iframe>  <script>
+  <button id="back-button" onclick="goBack()">🔙 Back to Game List</button>
+  <iframe id="game-frame"></iframe>
+
+  <script>
     function loadGame(url) {
       document.getElementById('game-list').style.display = 'none';
       document.getElementById('game-frame').style.display = 'block';
@@ -104,5 +133,6 @@
       document.getElementById('back-button').style.display = 'none';
       document.getElementById('game-frame').src = '';
     }
-  </script></body>
+  </script>
+</body>
 </html>
