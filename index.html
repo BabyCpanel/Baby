@@ -1,150 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Galaxy Blaster X</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎮 Multi Game Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
-      background: black;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
       color: white;
-      text-align: center;
-      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
-    h1 { margin: 10px 0; }
-
-    #controls {
+    h1 {
+      margin: 20px 0;
+    }
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .game-card {
+      background: #1a1a2f;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 12px #00000066;
+      transition: transform 0.2s ease-in-out;
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+    }
+    .game-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+    .game-card button {
+      width: 100%;
+      padding: 10px;
+      background: deepskyblue;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    iframe {
+      width: 90vw;
+      height: 80vh;
+      border: none;
+      margin: 20px 0;
+    }
+    #game-frame {
       display: none;
-      margin: 10px 0;
     }
-
-    canvas {
-      background: radial-gradient(circle at center, #000000 30%, #111122 100%);
-      display: block;
-      margin: 0 auto;
-    }
-
-    button {
+    #back-button {
+      display: none;
+      margin: 10px;
       padding: 10px 20px;
-      margin: 5px;
-      font-size: 20px;
-      background: #222;
-      color: #fff;
-      border: 1px solid #fff;
+      background: crimson;
+      color: white;
+      border: none;
+      font-size: 16px;
       border-radius: 5px;
-    }
-
-    @media (max-width: 600px) {
-      #controls { display: block; }
     }
   </style>
 </head>
 <body>
-  <h1>🚀 Galaxy Blaster X</h1>
-  <canvas id="gameCanvas" width="480" height="640"></canvas>
+  <h1>🎮 Multi Game Portal</h1>
+  <div class="game-grid" id="game-list">
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x140?text=Space+Shooter" alt="Space Shooter">
+      <button onclick="loadGame('https://drayyy.vercel.app/games/spaceshooter.html')">Play Space Shooter</button>
+    </div>
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x140?text=2048+Game" alt="2048">
+      <button onclick="loadGame('https://drayyy.vercel.app/games/2048.html')">Play 2048</button>
+    </div>
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x140?text=Flappy+Bird" alt="Flappy Bird">
+      <button onclick="loadGame('https://drayyy.vercel.app/games/flappy.html')">Play Flappy Bird</button>
+    </div>
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x140?text=Snake+Classic" alt="Snake">
+      <button onclick="loadGame('https://drayyy.vercel.app/games/snake.html')">Play Snake Classic</button>
+    </div>
+  </div><button id="back-button" onclick="goBack()">🔙 Back to Game List</button>
 
-  <div id="controls">
-    <button onclick="moveLeft()">◀️</button>
-    <button onclick="shoot()">🔫</button>
-    <button onclick="moveRight()">▶️</button>
-  </div>
-
-  <!-- Background Music -->
-  <audio id="bg-music" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/10/27/audio_6fb9e1b7d4.mp3" type="audio/mpeg">
-  </audio>
-  <!-- Sound Effects -->
-  <audio id="sfx-laser" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_a17293e40f.mp3?filename=laser-gun-shot-123109.mp3"></audio>
-  <audio id="sfx-explosion" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d2a2a7a4c6.mp3?filename=explosion-123110.mp3"></audio>
-
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    const bgMusic = document.getElementById("bg-music");
-    const sfxLaser = document.getElementById("sfx-laser");
-    const sfxExplosion = document.getElementById("sfx-explosion");
-
-    bgMusic.volume = 0.3;
-    bgMusic.play();
-
-    const player = { x: 220, y: 580, w: 40, h: 40 };
-    const bullets = [];
-    const enemies = [];
-    let score = 0;
-
-    // Base64 Images
-    const playerImg = new Image();
-    playerImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAvUlEQVR42u3XsQ0CMQxEUe2PyZwKX4ANtHs0Uhdmp7vZAAyo+GrmGHqaDGZnBo2IUipUkqVJKlSSpUkqVJKlSSpUkqVJKlSSpUkqVJKlSSpUkqVJKlSSpUkqVJKlSSpUkqVJKlSSpUkqVJKlSSpUkqVJKlSTrVQW9yMBLHOZgCq5cFX9iyJXsfwMA7sPvKLP7uDrsHXuf7KMt7vwvwADAPTzBAAH8KyxAAAAAElFTkSuQmCC";
-
-    const enemyImg = new Image();
-    enemyImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAwElEQVR42u3XMQrCQBBFUQ3EkiJX4AKbgIVsHQ/VNsDDJKVRjqKlZgTn9OdB8AzzbzzwzRAAAAAAAAAACMBDacsyCLbhyoWXL2gV+qEpxFb7CIaUDFHzD7bwLYf4FdkiEVBdsFqEynMvhGplICR2p0twv1crCkJYEnBySCQOV0EEo5XE0UpnIaLHDZH5Qja+js7LYKZgrPcrV6XPZ4VKiRKlSpUqVKlSpUqVKlSpUqVKlSpUqVKlSpUqVKle0fQNo7ZxyR99zDAAAAAElFTkSuQmCC";
-
-    // Controls
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft') moveLeft();
-      if (e.key === 'ArrowRight') moveRight();
-      if (e.key === ' ') shoot();
-    });
-
-    function moveLeft() {
-      player.x = Math.max(0, player.x - 20);
+  <iframe id="game-frame"></iframe>  <script>
+    function loadGame(url) {
+      document.getElementById('game-list').style.display = 'none';
+      document.getElementById('game-frame').style.display = 'block';
+      document.getElementById('back-button').style.display = 'block';
+      document.getElementById('game-frame').src = url;
     }
 
-    function moveRight() {
-      player.x = Math.min(canvas.width - player.w, player.x + 20);
+    function goBack() {
+      document.getElementById('game-list').style.display = 'grid';
+      document.getElementById('game-frame').style.display = 'none';
+      document.getElementById('back-button').style.display = 'none';
+      document.getElementById('game-frame').src = '';
     }
-
-    function shoot() {
-      sfxLaser.currentTime = 0;
-      sfxLaser.play();
-      bullets.push({ x: player.x + player.w/2 - 5, y: player.y, w: 10, h: 20 });
-    }
-
-    function spawnEnemy() {
-      enemies.push({ x: Math.random() * (canvas.width - 40), y: 0, w: 40, h: 40 });
-    }
-
-    function update() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(playerImg, player.x, player.y, player.w, player.h);
-
-      bullets.forEach(b => {
-        b.y -= 5;
-        ctx.fillStyle = 'lime';
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-      });
-
-      enemies.forEach(e => {
-        e.y += 2;
-        ctx.drawImage(enemyImg, e.x, e.y, e.w, e.h);
-      });
-
-      bullets.forEach((b, i) => {
-        enemies.forEach((e, j) => {
-          if (
-            b.x < e.x + e.w && b.x + b.w > e.x &&
-            b.y < e.y + e.h && b.y + b.h > e.y
-          ) {
-            bullets.splice(i, 1);
-            enemies.splice(j, 1);
-            sfxExplosion.currentTime = 0;
-            sfxExplosion.play();
-            score++;
-          }
-        });
-      });
-
-      ctx.fillStyle = 'white';
-      ctx.font = '16px Arial';
-      ctx.fillText("Score: " + score, 10, 20);
-
-      requestAnimationFrame(update);
-    }
-
-    setInterval(spawnEnemy, 1000);
-    update();
-  </script>
-</body>
+  </script></body>
 </html>
