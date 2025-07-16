@@ -1,136 +1,214 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Neon Bug Tools</title>
+  <title>🟦 Escape the Square: Ultimate</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: #0e0e0e;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
       color: #fff;
-      font-family: sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       height: 100vh;
-      margin: 0;
+      overflow: hidden;
     }
-    .box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid #333;
-      border-radius: 15px;
-      padding: 20px;
-      width: 300px;
-      text-align: center;
+
+    h1 {
+      margin-top: 20px;
     }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+
+    #score, #highscore {
+      margin-top: 5px;
+    }
+
+    canvas {
+      background: #222;
+      border: 2px solid #fff;
+      margin-top: 10px;
+    }
+
+    #play-again {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      display: none;
+      background: deepskyblue;
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-    }
-    input {
-      background: rgba(255,255,255,0.1);
       color: white;
-    }
-    button {
-      background: black;
-      color: white;
+      border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      background: #222;
-    }
-    .hidden {
+
+    #controls {
       display: none;
+      margin-top: 15px;
     }
-    #developer {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: black;
-      padding: 10px 15px;
-      border-radius: 10px;
-      text-decoration: none;
-      color: white;
-      font-size: 14px;
+
+    .btn {
+      padding: 10px 20px;
+      margin: 0 10px;
+      background: #333;
+      color: #fff;
+      border: 1px solid #fff;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+
+    @media (max-width: 600px) {
+      #controls {
+        display: flex;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
+  <h1>🟦 Escape the Square</h1>
+  <div id="score">Score: 0</div>
+  <div id="highscore">Highscore: 0</div>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <button id="play-again">🔁 Play Again</button>
 
-<div class="box" id="login-box">
-  <h2>Masukan Nama</h2>
-  <input type="text" id="nama" placeholder="Nama">
-  <h2>Masukan Password</h2>
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
+  <div id="controls">
+    <button class="btn" onclick="moveLeft()">◀️ Left</button>
+    <button class="btn" onclick="moveRight()">▶️ Right</button>
+  </div>
 
-<div class="box hidden" id="menu-box">
-  <h2>Menu Bug</h2>
-  <input type="text" id="nomor" placeholder="Masukan Nomor">
-  <button onclick="showBugMenu()">Lanjut</button>
-</div>
+  <audio id="bg-music" src="game.mp3" loop></audio>
+  <audio id="sfx" src="gameover.mp3"></audio>
 
-<div class="box hidden" id="bug-box">
-  <h2>Pilih Bug</h2>
-  <button onclick="kirimBug('Delay Hard')">Delay Hard</button>
-  <button onclick="kirimBug('Delay Invis')">Delay Invis</button>
-  <button onclick="kirimBug('Crash UI')">Crash UI</button>
-  <button onclick="kirimBug('Bug iOS')">Bug iOS</button>
-  <div id="status"></div>
-</div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const bgMusic = document.getElementById('bg-music');
+    const sfx = document.getElementById('sfx');
+    const playBtn = document.getElementById('play-again');
 
-<div class="box hidden" id="proses-box">
-  <h2 id="proses-status"></h2>
-  <button onclick="cekBug()">Cek Bug</button>
-</div>
+    let score = 0;
+    let highscore = localStorage.getItem('highscore') || 0;
+    let obstacles = [];
+    let gameOver = false;
+    const player = {
+      x: 180,
+      y: 550,
+      size: 40,
+      speed: 6,
+      color: 'deepskyblue'
+    };
 
-<div class="box hidden" id="done-box">
-  <h2>Done Bug Silahkan Cek!!</h2>
-</div>
-
-<a href="https://t.me/XxNann" target="_blank" id="developer">Developer</a>
-
-<script>
-  function login() {
-    let nama = document.getElementById('nama').value;
-    let pass = document.getElementById('password').value;
-
-    // Validasi username & password yang diizinkan
-    if(nama === "ngetest" && pass === "999"){
-      document.getElementById('login-box').classList.add('hidden');
-      document.getElementById('menu-box').classList.remove('hidden');
-    } else {
-      alert('Username atau Password salah bro!');
+    function drawPlayer() {
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.size, player.size);
     }
-  }
 
-  function showBugMenu(){
-    let nomor = document.getElementById('nomor').value;
-    if(nomor){
-      document.getElementById('menu-box').classList.add('hidden');
-      document.getElementById('bug-box').classList.remove('hidden');
-    } else {
-      alert('Masukin nomor dulu!');
+    function drawObstacles() {
+      ctx.fillStyle = 'red';
+      obstacles.forEach(obs => {
+        ctx.fillRect(obs.x, obs.y, obs.size, obs.size);
+      });
     }
-  }
 
-  function kirimBug(type){
-    document.getElementById('bug-box').classList.add('hidden');
-    document.getElementById('proses-box').classList.remove('hidden');
-    document.getElementById('proses-status').innerText = `Proses Mengirim Bug: ${type}...`;
-  }
+    function updateObstacles() {
+      for (let obs of obstacles) {
+        obs.y += obs.speed;
 
-  function cekBug(){
-    document.getElementById('proses-box').classList.add('hidden');
-    document.getElementById('done-box').classList.remove('hidden');
-  }
-</script>
+        if (
+          obs.x < player.x + player.size &&
+          obs.x + obs.size > player.x &&
+          obs.y < player.y + player.size &&
+          obs.y + obs.size > player.y
+        ) {
+          endGame();
+        }
+      }
+      obstacles = obstacles.filter(obs => obs.y < canvas.height);
+    }
 
+    function spawnObstacle() {
+      const size = 40;
+      const x = Math.random() * (canvas.width - size);
+      const speed = 2 + Math.random() * 3 + score / 80;
+      obstacles.push({ x, y: -size, size, speed });
+    }
+
+    function drawScore() {
+      document.getElementById('score').textContent = `Score: ${score}`;
+      document.getElementById('highscore').textContent = `Highscore: ${highscore}`;
+    }
+
+    function loop() {
+      if (gameOver) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayer();
+      drawObstacles();
+      updateObstacles();
+      drawScore();
+
+      score++;
+      requestAnimationFrame(loop);
+    }
+
+    function endGame() {
+      gameOver = true;
+      bgMusic.pause();
+      sfx.play();
+      if (score > highscore) {
+        localStorage.setItem('highscore', score);
+        highscore = score;
+      }
+      drawScore();
+      ctx.fillStyle = 'white';
+      ctx.font = '30px sans-serif';
+      ctx.fillText('💀 Game Over!', 110, 300);
+      playBtn.style.display = 'block';
+    }
+
+    function startGame() {
+      score = 0;
+      gameOver = false;
+      player.x = 180;
+      obstacles = [];
+      bgMusic.currentTime = 0;
+      bgMusic.play();
+      playBtn.style.display = 'none';
+      loop();
+    }
+
+    playBtn.onclick = () => startGame();
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && player.x > 0) {
+        player.x -= player.speed;
+      } else if (e.key === 'ArrowRight' && player.x + player.size < canvas.width) {
+        player.x += player.speed;
+      }
+    });
+
+    function moveLeft() {
+      if (player.x > 0) player.x -= player.speed;
+    }
+
+    function moveRight() {
+      if (player.x + player.size < canvas.width) player.x += player.speed;
+    }
+
+    // Obstacles loop
+    setInterval(() => {
+      if (!gameOver) spawnObstacle();
+    }, 700);
+
+    // Auto start on load
+    startGame();
+  </script>
 </body>
 </html>
