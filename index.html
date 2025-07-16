@@ -2,137 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🎮 GAME ZIONIXSZY</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAME ZIONIXSZY</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎮 GAME ZIONIXSZY 🎮</h1>
+    <p>Selamat datang! Pilih dan mainkan game favoritmu di bawah ini!</p>
+  </header>
+
+  <section id="game-gallery">
+    <!-- Game Cards Placeholder (20+ games on batch 1) -->
+    <div class="game-card">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Tetris_image.png" alt="Tetris" />
+      <h2>Tetris</h2>
+      <a href="games/tetris/index.html" target="_blank">Mainkan</a>
+    </div>
+    <div class="game-card">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/2048_game_board.png" alt="2048" />
+      <h2>2048</h2>
+      <a href="games/2048/index.html" target="_blank">Mainkan</a>
+    </div>
+    <div class="game-card">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/Pac_Man.png" alt="Pacman" />
+      <h2>Pacman</h2>
+      <a href="games/pacman/index.html" target="_blank">Mainkan</a>
+    </div>
+    <div class="game-card">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Flappy_Bird_icon.png" alt="Flappy Bird" />
+      <h2>Flappy Bird</h2>
+      <a href="games/flappy-bird/index.html" target="_blank">Mainkan</a>
+    </div>
+    <!-- Tambah hingga 100 game -->
+  </section>
+
+  <footer>
+    <p>© 2025 GAME ZIONIXSZY. Dibuat dengan cinta ❤️</p>
+  </footer>
+
   <style>
     body {
+      font-family: sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(120deg, #0f0f1a, #1c1c2e);
+      padding: 0;
+      background: linear-gradient(to bottom, #111, #222);
       color: white;
+      text-align: center;
+    }
+    header {
+      padding: 2em;
+      background-color: #000;
+    }
+    #game-gallery {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    h1 {
-      margin: 20px 0;
-      font-size: 2.2em;
-      background: linear-gradient(to right, #00ffff, #ff00ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 20px;
-      padding: 20px;
-      width: 100%;
-      max-width: 1200px;
+      padding: 2em;
     }
     .game-card {
-      background: #1a1a2f;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 0 12px #00000066;
-      transition: transform 0.2s ease-in-out;
-    }
-    .game-card:hover {
-      transform: translateY(-5px);
+      background: #333;
+      border-radius: 12px;
+      padding: 1em;
+      width: 200px;
+      box-shadow: 0 0 10px #000;
     }
     .game-card img {
       width: 100%;
-      height: 140px;
-      object-fit: cover;
-      filter: brightness(0.95);
+      border-radius: 8px;
     }
-    .game-card button {
-      width: 100%;
-      padding: 10px;
-      background: deepskyblue;
-      border: none;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: bold;
+    .game-card h2 {
+      margin: 0.5em 0;
     }
-    iframe {
-      width: 90vw;
-      height: 80vh;
-      border: none;
-      margin: 20px 0;
-      border-radius: 12px;
-      box-shadow: 0 0 12px #00000066;
+    .game-card a {
+      background: #0f0;
+      color: #000;
+      padding: 0.5em 1em;
+      border-radius: 8px;
+      text-decoration: none;
     }
-    #game-frame {
-      display: none;
-    }
-    #back-button {
-      display: none;
-      margin: 10px;
-      padding: 10px 20px;
-      background: crimson;
-      color: white;
-      border: none;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
+    footer {
+      padding: 2em;
+      background: #000;
     }
   </style>
-</head>
-<body>
-  <h1>🎮 GAME ZIONIXSZY</h1>
-  <div class="game-grid" id="game-list">
-    <div class="game-card">
-      <img src="https://cdn.pixabay.com/photo/2022/07/17/09/34/spaceship-7327481_960_720.jpg" alt="Space Shooter">
-      <button onclick="loadGame('https://html5games.github.io/space-invaders/')">Play Space Shooter</button>
-    </div>
-    <div class="game-card">
-      <img src="https://play2048.co/meta/apple-touch-icon.png" alt="2048">
-      <button onclick="loadGame('https://play2048.co/')">Play 2048</button>
-    </div>
-    <div class="game-card">
-      <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Flappy_Bird_icon.png" alt="Flappy Bird">
-      <button onclick="loadGame('https://nebez.github.io/floppybird/')">Play Flappy Bird</button>
-    </div>
-    <div class="game-card">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Snake_game_play.gif" alt="Snake">
-      <button onclick="loadGame('https://playsnake.org/')">Play Snake Classic</button>
-    </div>
-    <div class="game-card">
-      <img src="https://cdn.pixabay.com/photo/2020/05/07/10/34/strategy-5140065_960_720.jpg" alt="Chess">
-      <button onclick="loadGame('https://www.chess.com/play/computer')">Play Chess</button>
-    </div>
-    <div class="game-card">
-      <img src="https://cdn.pixabay.com/photo/2020/05/07/09/36/checkers-5139895_960_720.jpg" alt="Checkers">
-      <button onclick="loadGame('https://cardgames.io/checkers/')">Play Checkers</button>
-    </div>
-    <div class="game-card">
-      <img src="https://cdn.pixabay.com/photo/2014/04/02/10/45/tetris-306452_960_720.png" alt="Tetris">
-      <button onclick="loadGame('https://tetris.com/play-tetris')">Play Tetris</button>
-    </div>
-    <div class="game-card">
-      <img src="https://cdn.pixabay.com/photo/2016/10/06/00/41/pacman-1711304_960_720.jpg" alt="Pac-Man">
-      <button onclick="loadGame('https://www.retrogames.cc/embed/42435-pac-man.html')">Play Pac-Man</button>
-    </div>
-  </div>
-
-  <button id="back-button" onclick="goBack()">🔙 Back to Game List</button>
-  <iframe id="game-frame"></iframe>
-
-  <script>
-    function loadGame(url) {
-      document.getElementById('game-list').style.display = 'none';
-      document.getElementById('game-frame').style.display = 'block';
-      document.getElementById('back-button').style.display = 'block';
-      document.getElementById('game-frame').src = url;
-    }
-
-    function goBack() {
-      document.getElementById('game-list').style.display = 'grid';
-      document.getElementById('game-frame').style.display = 'none';
-      document.getElementById('back-button').style.display = 'none';
-      document.getElementById('game-frame').src = '';
-    }
-  </script>
 </body>
 </html>
