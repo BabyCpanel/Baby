@@ -1,94 +1,136 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catch the Emoji!</title>
+  <title>Neon Bug Tools</title>
   <style>
     body {
+      background: #0e0e0e;
+      color: #fff;
       font-family: sans-serif;
-      background: linear-gradient(135deg, #ffdfba, #ffe2e2);
-      margin: 0;
-      overflow: hidden;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
-
-    h1 {
-      margin-top: 20px;
+    .box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid #333;
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
     }
-
-    #score {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    #game-area {
-      position: relative;
+    input, button {
       width: 100%;
-      height: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
     }
-
-    .emoji {
-      position: absolute;
-      font-size: 36px;
+    input {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    button {
+      background: black;
+      color: white;
       cursor: pointer;
-      user-select: none;
-      transition: transform 0.1s;
     }
-
-    .emoji:active {
-      transform: scale(0.8);
+    button:hover {
+      background: #222;
+    }
+    .hidden {
+      display: none;
+    }
+    #developer {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: black;
+      padding: 10px 15px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: white;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h1>🎯 Catch the Emoji!</h1>
-  <div id="score">Score: 0</div>
-  <div id="game-area"></div>
 
-  <script>
-    const gameArea = document.getElementById("game-area");
-    const scoreDisplay = document.getElementById("score");
+<div class="box" id="login-box">
+  <h2>Masukan Nama</h2>
+  <input type="text" id="nama" placeholder="Nama">
+  <h2>Masukan Password</h2>
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
 
-    let score = 0;
-    const emojis = ["😀", "😎", "🐶", "🍕", "🚀", "👾", "🎉"];
-    const interval = 1000; // ms
+<div class="box hidden" id="menu-box">
+  <h2>Menu Bug</h2>
+  <input type="text" id="nomor" placeholder="Masukan Nomor">
+  <button onclick="showBugMenu()">Lanjut</button>
+</div>
 
-    function randomPosition() {
-      const x = Math.random() * (window.innerWidth - 50);
-      const y = Math.random() * (window.innerHeight - 100);
-      return { x, y };
+<div class="box hidden" id="bug-box">
+  <h2>Pilih Bug</h2>
+  <button onclick="kirimBug('Delay Hard')">Delay Hard</button>
+  <button onclick="kirimBug('Delay Invis')">Delay Invis</button>
+  <button onclick="kirimBug('Crash UI')">Crash UI</button>
+  <button onclick="kirimBug('Bug iOS')">Bug iOS</button>
+  <div id="status"></div>
+</div>
+
+<div class="box hidden" id="proses-box">
+  <h2 id="proses-status"></h2>
+  <button onclick="cekBug()">Cek Bug</button>
+</div>
+
+<div class="box hidden" id="done-box">
+  <h2>Done Bug Silahkan Cek!!</h2>
+</div>
+
+<a href="https://t.me/XxNann" target="_blank" id="developer">Developer</a>
+
+<script>
+  function login() {
+    let nama = document.getElementById('nama').value;
+    let pass = document.getElementById('password').value;
+
+    // Validasi username & password yang diizinkan
+    if(nama === "ngetest" && pass === "999"){
+      document.getElementById('login-box').classList.add('hidden');
+      document.getElementById('menu-box').classList.remove('hidden');
+    } else {
+      alert('Username atau Password salah bro!');
     }
+  }
 
-    function spawnEmoji() {
-      const emoji = document.createElement("div");
-      emoji.classList.add("emoji");
-      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-
-      const { x, y } = randomPosition();
-      emoji.style.left = `${x}px`;
-      emoji.style.top = `${y}px`;
-
-      emoji.onclick = () => {
-        score++;
-        scoreDisplay.textContent = `Score: ${score}`;
-        gameArea.removeChild(emoji);
-      };
-
-      gameArea.appendChild(emoji);
-
-      setTimeout(() => {
-        if (gameArea.contains(emoji)) {
-          gameArea.removeChild(emoji);
-        }
-      }, 1200);
+  function showBugMenu(){
+    let nomor = document.getElementById('nomor').value;
+    if(nomor){
+      document.getElementById('menu-box').classList.add('hidden');
+      document.getElementById('bug-box').classList.remove('hidden');
+    } else {
+      alert('Masukin nomor dulu!');
     }
+  }
 
-    // Start game
-    setInterval(spawnEmoji, interval);
-  </script>
+  function kirimBug(type){
+    document.getElementById('bug-box').classList.add('hidden');
+    document.getElementById('proses-box').classList.remove('hidden');
+    document.getElementById('proses-status').innerText = `Proses Mengirim Bug: ${type}...`;
+  }
+
+  function cekBug(){
+    document.getElementById('proses-box').classList.add('hidden');
+    document.getElementById('done-box').classList.remove('hidden');
+  }
+</script>
+
 </body>
 </html>
