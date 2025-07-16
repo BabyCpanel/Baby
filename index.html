@@ -1,48 +1,56 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAME ZIONIXSZY</title>
+  <title>GAME ZIONIXSZY - 100+ All Gender Games</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { background: linear-gradient(to right, #fdf2f8, #fce7f3); color: #4b5563; }
+    body { background: linear-gradient(to right, #1e293b, #3b0764); color: #f1f5f9; }
     .game-card:hover { transform: scale(1.03); transition: 0.3s ease-in-out; }
     iframe { width: 100%; height: 300px; border: none; border-radius: 0.5rem; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
-  <header class="bg-pink-600 p-4 shadow-md text-center text-2xl font-bold text-white">
-    🎀 GAME ZIONIXSZY - 100+ Fun Games for Girls 🎮
-  </header>  <div id="loginSection" class="flex flex-col items-center justify-center py-10">
-    <h2 class="text-xl font-semibold mb-4">Login to Play All Cute Games 💖</h2>
-    <input id="username" type="text" placeholder="Username" class="mb-2 px-4 py-2 rounded bg-pink-100 text-gray-800">
-    <input id="password" type="password" placeholder="Password" class="mb-4 px-4 py-2 rounded bg-pink-100 text-gray-800">
-    <button onclick="login()" class="px-6 py-2 bg-pink-500 hover:bg-pink-600 rounded text-white">Login</button>
+  <header class="bg-indigo-900 p-4 shadow-md text-center text-2xl font-bold text-white">
+    🎮 GAME ZIONIXSZY - 100+ Games for Everyone
+  </header>
+
+  <div id="loginSection" class="flex flex-col items-center justify-center py-10">
+    <h2 class="text-xl font-semibold mb-4">Login to Play All Games</h2>
+    <input id="username" type="text" placeholder="Username" class="mb-2 px-4 py-2 rounded bg-slate-800 text-white">
+    <input id="password" type="password" placeholder="Password" class="mb-4 px-4 py-2 rounded bg-slate-800 text-white">
+    <button onclick="login()" class="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 rounded">Login</button>
     <p id="loginError" class="text-red-500 mt-2 hidden">Invalid credentials. Try again!</p>
-  </div>  <main id="gameGallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 hidden">
+  </div>
+
+  <main id="gameGallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 hidden">
     <!-- Game Cards Will Be Inserted Dynamically -->
-  </main>  <script>
+  </main>
+
+  <script>
     const userDB = { 'admin': 'zionixszy123' };
 
     const gameList = [
-      { name: "Barbie Fashionista", url: "https://www.girlsgogames.com/game/barbie-fashionista", img: "https://img.icons8.com/fluency/96/fashion.png" },
-      { name: "Makeup Artist", url: "https://www.girlsgogames.com/game/makeup-artist", img: "https://img.icons8.com/fluency/96/lipstick.png" },
-      { name: "Cooking Fever", url: "https://www.crazygames.com/game/cooking-fever", img: "https://img.icons8.com/fluency/96/cooking-book.png" },
-      { name: "Nail Art Design", url: "https://www.girlsgogames.com/game/nail-salon", img: "https://img.icons8.com/fluency/96/nail-polish.png" },
-      { name: "Princess Dress Up", url: "https://www.girlsgogames.com/game/princess-dress-up", img: "https://img.icons8.com/fluency/96/dress-front-view.png" },
-      { name: "Love Tester", url: "https://www.girlsgogames.com/game/love-tester", img: "https://img.icons8.com/fluency/96/heart-with-arrow.png" },
-      { name: "Ice Cream Maker", url: "https://www.girlsgogames.com/game/ice-cream-maker", img: "https://img.icons8.com/fluency/96/ice-cream.png" },
-      { name: "Baking Cupcakes", url: "https://www.girlsgogames.com/game/baking-cupcakes", img: "https://img.icons8.com/fluency/96/cupcake.png" },
-      { name: "Hair Salon", url: "https://www.girlsgogames.com/game/hair-salon", img: "https://img.icons8.com/fluency/96/hair-dryer.png" },
-      { name: "Slime Maker", url: "https://www.girlsgogames.com/game/slime-maker", img: "https://img.icons8.com/fluency/96/slime.png" },
-      // ... Tambahkan hingga 100 game bertema cewek
+      { name: "Barbie Fashion", url: "https://www.girlsgogames.com/game/barbie-fashionista", img: "https://img.icons8.com/fluency/96/fashion.png" },
+      { name: "Makeup Queen", url: "https://www.girlsgogames.com/game/makeup-artist", img: "https://img.icons8.com/fluency/96/lipstick.png" },
+      { name: "Cooking Star", url: "https://www.crazygames.com/game/cooking-fever", img: "https://img.icons8.com/fluency/96/cooking-book.png" },
+      { name: "Princess Dressup", url: "https://www.girlsgogames.com/game/princess-dress-up", img: "https://img.icons8.com/fluency/96/dress-front-view.png" },
+      { name: "Stickman Hook", url: "https://www.crazygames.com/game/stickman-hook", img: "https://img.icons8.com/color/96/stickman.png" },
+      { name: "Sniper Attack", url: "https://www.crazygames.com/game/sniper-attack", img: "https://img.icons8.com/color/96/sniper-rifle.png" },
+      { name: "Football Hero", url: "https://www.crazygames.com/game/football-legends", img: "https://img.icons8.com/color/96/soccer-ball.png" },
+      { name: "Car Drift 3D", url: "https://www.crazygames.com/game/extreme-car-driving-simulator", img: "https://img.icons8.com/color/96/racing-car.png" },
+      { name: "Flappy Bird", url: "https://flappybird.io/", img: "https://img.icons8.com/color/96/bird.png" },
+      { name: "2048", url: "https://play2048.co/", img: "https://img.icons8.com/color/96/2048.png" },
+      { name: "Pacman", url: "https://www.google.com/logos/2010/pacman10-i.html", img: "https://img.icons8.com/color/96/pacman.png" },
+      { name: "Dino Chrome", url: "https://chromedino.com/", img: "https://img.icons8.com/color/96/trex.png" }
     ];
 
     for (let i = gameList.length + 1; i <= 100; i++) {
       gameList.push({
-        name: `Game Cewek #${i}`,
-        url: `https://source.unsplash.com/random/800x600?girl,game,${i}`,
-        img: `https://source.unsplash.com/random/96x96?cute,${i}`
+        name: `Game #${i}`,
+        url: `https://source.unsplash.com/random/800x600?game,${i}`,
+        img: `https://source.unsplash.com/random/96x96?fun,${i}`
       });
     }
 
@@ -62,15 +70,16 @@
       const container = document.getElementById("gameGallery");
       gameList.forEach(game => {
         const card = document.createElement("div");
-        card.className = "game-card bg-pink-100 rounded-lg overflow-hidden shadow-md text-center";
+        card.className = "game-card bg-slate-900 rounded-lg overflow-hidden shadow-md text-center";
         card.innerHTML = `
           <img src="${game.img}" class="w-full h-32 object-contain p-4">
           <div class="p-2">
-            <h3 class="text-md font-semibold text-pink-700">${game.name}</h3>
-            <a href="${game.url}" target="_blank" class="inline-block mt-2 px-4 py-1 bg-pink-400 text-white rounded hover:bg-pink-500">Play 💖</a>
+            <h3 class="text-md font-semibold text-indigo-300">${game.name}</h3>
+            <a href="${game.url}" target="_blank" class="inline-block mt-2 px-4 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600">Play 🎮</a>
           </div>`;
         container.appendChild(card);
       });
     }
-  </script></body>
+  </script>
+</body>
 </html>
