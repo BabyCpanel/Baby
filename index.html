@@ -1,55 +1,94 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Brute Force Login (Simulasi Aman)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catch the Emoji!</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; }
-    input, button { padding: 10px; margin: 10px; width: 300px; }
-    #log { margin-top: 20px; font-family: monospace; text-align: left; white-space: pre-wrap; }
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #ffdfba, #ffe2e2);
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #score {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #game-area {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 36px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s;
+    }
+
+    .emoji:active {
+      transform: scale(0.8);
+    }
   </style>
 </head>
 <body>
-  <h2>Brute Force Login Simulator</h2>
-
-  <!-- Target login (readonly, anggap ini sistem target buatan sendiri) -->
-  <input id="targetUser" type="text" value="admin" readonly />
-  <input id="targetPass" type="password" value="rahasia123" readonly />
-
-  <br><br>
-  <button onclick="startBruteForce()">Mulai Brute Force</button>
-
-  <div id="log">Log: </div>
+  <h1>🎯 Catch the Emoji!</h1>
+  <div id="score">Score: 0</div>
+  <div id="game-area"></div>
 
   <script>
-    // Wordlist pengguna dan password (simulasi)
-    const usernames = ["admin", "root", "user"];
-    const passwords = ["123456", "admin123", "rahasia", "rahasia123", "password"];
+    const gameArea = document.getElementById("game-area");
+    const scoreDisplay = document.getElementById("score");
 
-    function startBruteForce() {
-      const targetUser = document.getElementById('targetUser').value;
-      const targetPass = document.getElementById('targetPass').value;
-      let found = false;
-      let log = "🔍 Mencoba kombinasi login...\n";
+    let score = 0;
+    const emojis = ["😀", "😎", "🐶", "🍕", "🚀", "👾", "🎉"];
+    const interval = 1000; // ms
 
-      outer:
-      for (let u of usernames) {
-        for (let p of passwords) {
-          log += `⏳ Mencoba: ${u} / ${p}\n`;
-          if (u === targetUser && p === targetPass) {
-            log += `\n✅ Berhasil login dengan:\n👤 Username: ${u}\n🔑 Password: ${p}`;
-            found = true;
-            break outer;
-          }
-        }
-      }
-
-      if (!found) {
-        log += "\n❌ Tidak ada kombinasi yang cocok.";
-      }
-
-      document.getElementById("log").textContent = log;
+    function randomPosition() {
+      const x = Math.random() * (window.innerWidth - 50);
+      const y = Math.random() * (window.innerHeight - 100);
+      return { x, y };
     }
+
+    function spawnEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("emoji");
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+      const { x, y } = randomPosition();
+      emoji.style.left = `${x}px`;
+      emoji.style.top = `${y}px`;
+
+      emoji.onclick = () => {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        gameArea.removeChild(emoji);
+      };
+
+      gameArea.appendChild(emoji);
+
+      setTimeout(() => {
+        if (gameArea.contains(emoji)) {
+          gameArea.removeChild(emoji);
+        }
+      }, 1200);
+    }
+
+    // Start game
+    setInterval(spawnEmoji, interval);
   </script>
 </body>
 </html>
