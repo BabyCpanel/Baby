@@ -1,85 +1,95 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Zionixszy</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Editor Foto Latar Kertas + Tanda Tangan</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #282c34, #1a1a1a);
-      color: #fff;
-      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 20px;
     }
     h1 {
-      text-align: center;
+      margin-bottom: 20px;
     }
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
-      padding: 20px;
+    #canvas {
+      border: 1px solid #ccc;
+      background: url('https://i.ibb.co/WFZpX8n/kertas-texture.jpg') center center / cover no-repeat;
     }
-    .game-card {
-      background-color: #222;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s;
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .game-card:hover {
-      transform: scale(1.05);
-    }
-    .game-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-    .game-card h3 {
-      text-align: center;
-      margin: 10px 0;
-    }
-    .game-card a {
-      text-decoration: none;
-      color: #00f7ff;
+    .controls input[type="file"] {
       display: block;
-      text-align: center;
-      padding: 10px;
+    }
+    .controls input[type="text"] {
+      padding: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      background: darkblue;
+      color: white;
+      border: none;
+      cursor: pointer;
     }
   </style>
-  <script>
-    // Cek status login
-    if (localStorage.getItem("loggedIn") !== "true") {
-      window.location.href = "login.html";
-    }
-  </script>
 </head>
 <body>
-  <h1>🎮 Game Zionixszy - 100+ Game Menarik</h1>
-  <div class="game-grid">
-    <!-- Contoh game, sisanya akan saya generate otomatis -->
-    <div class="game-card">
-      <img src="https://source.unsplash.com/featured/?girl,game1" alt="Game 1" />
-      <h3>Dress Up Princess</h3>
-      <a href="games/dress-up/index.html" target="_blank">Mainkan</a>
-    </div>
-    <div class="game-card">
-      <img src="https://source.unsplash.com/featured/?car,racing" alt="Game 2" />
-      <h3>Street Racing Turbo</h3>
-      <a href="games/racing/index.html" target="_blank">Mainkan</a>
-    </div>
-    <div class="game-card">
-      <img src="https://source.unsplash.com/featured/?puzzle,brain" alt="Game 3" />
-      <h3>Puzzle Mind</h3>
-      <a href="games/puzzle/index.html" target="_blank">Mainkan</a>
-    </div>
-    <div class="game-card">
-      <img src="https://source.unsplash.com/featured/?cat,cute" alt="Game 4" />
-      <h3>Cat Pet Simulator</h3>
-      <a href="games/pet/index.html" target="_blank">Mainkan</a>
-    </div>
-    <!-- Akan dilanjutkan sampai 100++ -->
-  </div>
-</body>
+  <h1>📄 Edit Foto dengan Latar Kertas & Tanda Tangan</h1>
+  <canvas id="canvas" width="800" height="600"></canvas>  <div class="controls">
+    <label>Unggah Foto:
+      <input type="file" id="photoInput" accept="image/*">
+    </label>
+    <label>Teks Tanda Tangan:
+      <input type="text" id="signatureText" placeholder="Tanda tangan di kertas...">
+    </label>
+    <button onclick="downloadImage()">💾 Unduh Gambar</button>
+  </div>  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const photoInput = document.getElementById('photoInput');
+    const signatureInput = document.getElementById('signatureText');
+
+    const background = new Image();
+    background.src = 'https://i.ibb.co/WFZpX8n/kertas-texture.jpg';
+
+    let userImage = null;
+
+    photoInput.addEventListener('change', (e) => {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        userImage = new Image();
+        userImage.onload = () => drawAll();
+        userImage.src = event.target.result;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+    signatureInput.addEventListener('input', drawAll);
+
+    function drawAll() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+      if (userImage) {
+        ctx.drawImage(userImage, 100, 100, 300, 400);
+      }
+
+      ctx.font = '32px "Brush Script MT", cursive';
+      ctx.fillStyle = 'black';
+      ctx.fillText(signatureInput.value, 450, 500);
+    }
+
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'foto_tanda_tangan.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  </script></body>
 </html>
