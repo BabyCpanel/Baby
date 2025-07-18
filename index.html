@@ -1,95 +1,52 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Editor Foto Latar Kertas + Tanda Tangan</title>
+  <title>🛠️ Fix Bug WhatsApp Invisible</title>
   <style>
     body {
+      background: #f3f3f3;
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      text-align: center;
+      padding: 50px;
     }
     h1 {
-      margin-bottom: 20px;
-    }
-    #canvas {
-      border: 1px solid #ccc;
-      background: url('https://i.ibb.co/WFZpX8n/kertas-texture.jpg') center center / cover no-repeat;
-    }
-    .controls {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .controls input[type="file"] {
-      display: block;
-    }
-    .controls input[type="text"] {
-      padding: 5px;
+      color: #25D366;
     }
     button {
-      padding: 10px 15px;
-      background: darkblue;
-      color: white;
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 16px;
+      background: #25D366;
       border: none;
+      color: white;
       cursor: pointer;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #128C7E;
     }
   </style>
 </head>
 <body>
-  <h1>📄 Edit Foto dengan Latar Kertas & Tanda Tangan</h1>
-  <canvas id="canvas" width="800" height="600"></canvas>  <div class="controls">
-    <label>Unggah Foto:
-      <input type="file" id="photoInput" accept="image/*">
-    </label>
-    <label>Teks Tanda Tangan:
-      <input type="text" id="signatureText" placeholder="Tanda tangan di kertas...">
-    </label>
-    <button onclick="downloadImage()">💾 Unduh Gambar</button>
-  </div>  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const photoInput = document.getElementById('photoInput');
-    const signatureInput = document.getElementById('signatureText');
+  <h1>🛠️ WhatsApp Bug Fix Tool</h1>
+  <p>Perbaiki bug invisible / UI delay / crash di WhatsApp Web dengan aman!</p>
 
-    const background = new Image();
-    background.src = 'https://i.ibb.co/WFZpX8n/kertas-texture.jpg';
+  <button onclick="clearWACache()">🧹 Hapus Cache WhatsApp</button>
+  <button onclick="openWASafe()">🛡️ Buka WhatsApp Web (Safe)</button>
+  <button onclick="location.reload()">🔄 Refresh Halaman</button>
 
-    let userImage = null;
-
-    photoInput.addEventListener('change', (e) => {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        userImage = new Image();
-        userImage.onload = () => drawAll();
-        userImage.src = event.target.result;
-      }
-      reader.readAsDataURL(e.target.files[0]);
-    });
-
-    signatureInput.addEventListener('input', drawAll);
-
-    function drawAll() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-      if (userImage) {
-        ctx.drawImage(userImage, 100, 100, 300, 400);
-      }
-
-      ctx.font = '32px "Brush Script MT", cursive';
-      ctx.fillStyle = 'black';
-      ctx.fillText(signatureInput.value, 450, 500);
+  <script>
+    function clearWACache() {
+      indexedDB.deleteDatabase("wawc");
+      localStorage.clear();
+      sessionStorage.clear();
+      alert("Cache WhatsApp Web dihapus. Silakan refresh halaman.");
     }
 
-    function downloadImage() {
-      const link = document.createElement('a');
-      link.download = 'foto_tanda_tangan.png';
-      link.href = canvas.toDataURL();
-      link.click();
+    function openWASafe() {
+      window.open("https://web.whatsapp.com/?safe_mode=true", "_blank");
     }
-  </script></body>
+  </script>
+</body>
 </html>
