@@ -2,51 +2,62 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>🛠️ Fix Bug WhatsApp Invisible</title>
+  <title>Form Laporan Penipuan Telegram</title>
   <style>
     body {
-      background: #f3f3f3;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
+      background: #f2f2f2;
+      padding: 20px;
     }
-    h1 {
-      color: #25D366;
+    .form-container {
+      background: white;
+      padding: 25px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #d62828;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
-      padding: 15px 25px;
-      margin: 10px;
-      font-size: 16px;
-      background: #25D366;
-      border: none;
+      background-color: #d62828;
       color: white;
+      border: none;
       cursor: pointer;
-      border-radius: 6px;
     }
     button:hover {
-      background: #128C7E;
+      background-color: #b51e1e;
     }
   </style>
 </head>
 <body>
-  <h1>🛠️ WhatsApp Bug Fix Tool</h1>
-  <p>Perbaiki bug invisible / UI delay / crash di WhatsApp Web dengan aman!</p>
+  <div class="form-container">
+    <h2>Laporkan Penipuan Telegram</h2>
+    <form action="https://t.me/notoscam" method="get" target="_blank">
+      <label for="username">🔎 Username Penipu (tanpa @):</label>
+      <input type="text" id="username" name="username" required placeholder="Contoh: BaimWong_Official">
 
-  <button onclick="clearWACache()">🧹 Hapus Cache WhatsApp</button>
-  <button onclick="openWASafe()">🛡️ Buka WhatsApp Web (Safe)</button>
-  <button onclick="location.reload()">🔄 Refresh Halaman</button>
+      <label for="link">🔗 Link Channel/Grup:</label>
+      <input type="url" id="link" name="link" placeholder="https://t.me/namachannel">
 
-  <script>
-    function clearWACache() {
-      indexedDB.deleteDatabase("wawc");
-      localStorage.clear();
-      sessionStorage.clear();
-      alert("Cache WhatsApp Web dihapus. Silakan refresh halaman.");
-    }
+      <label for="deskripsi">📋 Deskripsi Penipuan:</label>
+      <textarea id="deskripsi" name="deskripsi" rows="4" required placeholder="Contoh: Akun ini mengaku sebagai Baim Wong dan meminta uang sebagai biaya hadiah."></textarea>
 
-    function openWASafe() {
-      window.open("https://web.whatsapp.com/?safe_mode=true", "_blank");
-    }
-  </script>
+      <label for="bukti">📷 Link Bukti (Google Drive, Imgur, dll):</label>
+      <input type="url" id="bukti" name="bukti" placeholder="https://drive.google.com/...">
+
+      <button type="submit">Laporkan Sekarang via Telegram</button>
+    </form>
+  </div>
 </body>
 </html>
