@@ -2,62 +2,123 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Form Laporan Penipuan Telegram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VPS Gratis Creator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       background: #f2f2f2;
-      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
     }
-    .form-container {
+    .container {
+      max-width: 600px;
       background: white;
-      padding: 25px;
-      max-width: 500px;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
     h2 {
       text-align: center;
-      color: #d62828;
+      color: #0066cc;
     }
-    input, textarea, select, button {
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, button {
       width: 100%;
-      margin: 10px 0;
       padding: 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
+      font-size: 16px;
+      margin-bottom: 10px;
     }
     button {
-      background-color: #d62828;
+      background-color: #0077cc;
       color: white;
-      border: none;
       cursor: pointer;
+      border: none;
     }
     button:hover {
-      background-color: #b51e1e;
+      background-color: #005fa3;
+    }
+    .output {
+      margin-top: 25px;
+      background: #e7f7e7;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 5px solid #28a745;
+    }
+    a {
+      color: #0077cc;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Laporkan Penipuan Telegram</h2>
-    <form action="https://t.me/notoscam" method="get" target="_blank">
-      <label for="username">🔎 Username Penipu (tanpa @):</label>
-      <input type="text" id="username" name="username" required placeholder="Contoh: BaimWong_Official">
+  <div class="container">
+    <h2>🖥️ Buat VPS Gratis Otomatis</h2>
+    <form id="vpsForm">
+      <label for="platform">Pilih Platform VPS:</label>
+      <select id="platform" required>
+        <option value="oracle">Oracle Cloud (Gratis Selamanya)</option>
+        <option value="gcp">Google Cloud ($300 Trial)</option>
+        <option value="aws">Amazon AWS (12 Bulan Gratis)</option>
+        <option value="azure">Microsoft Azure ($200 Trial)</option>
+      </select>
 
-      <label for="link">🔗 Link Channel/Grup:</label>
-      <input type="url" id="link" name="link" placeholder="https://t.me/namachannel">
+      <label for="email">Email Aktif:</label>
+      <input type="email" id="email" placeholder="Contoh: kamu@email.com" required>
 
-      <label for="deskripsi">📋 Deskripsi Penipuan:</label>
-      <textarea id="deskripsi" name="deskripsi" rows="4" required placeholder="Contoh: Akun ini mengaku sebagai Baim Wong dan meminta uang sebagai biaya hadiah."></textarea>
+      <label for="negara">Negara Domisili:</label>
+      <input type="text" id="negara" placeholder="Contoh: Indonesia" required>
 
-      <label for="bukti">📷 Link Bukti (Google Drive, Imgur, dll):</label>
-      <input type="url" id="bukti" name="bukti" placeholder="https://drive.google.com/...">
-
-      <button type="submit">Laporkan Sekarang via Telegram</button>
+      <button type="submit">Tampilkan Panduan VPS</button>
     </form>
+
+    <div id="output" class="output" style="display:none;"></div>
   </div>
-</body>
-</html>
+
+  <script>
+    document.getElementById('vpsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const platform = document.getElementById('platform').value;
+      const email = document.getElementById('email').value;
+      const negara = document.getElementById('negara').value;
+      const output = document.getElementById('output');
+      let result = "";
+
+      if (platform === "oracle") {
+        result = `
+          <h3>🔷 Oracle Cloud Free Tier</h3>
+          <ul>
+            <li>Buka: <a href="https://www.oracle.com/cloud/free/" target="_blank">https://www.oracle.com/cloud/free/</a></li>
+            <li>Daftar menggunakan email: <strong>${email}</strong></li>
+            <li>Gunakan kartu kredit atau VCC (Virtual Credit Card) untuk verifikasi.</li>
+            <li>Pilih region <strong>India atau Jepang</strong> agar bisa deploy VM gratis.</li>
+            <li>Setelah aktif, buat instance "VM.Standard.A1.Flex" (4 core, 24 GB RAM).</li>
+          </ul>
+        `;
+      } else if (platform === "gcp") {
+        result = `
+          <h3>🔶 Google Cloud Platform (GCP) Trial</h3>
+          <ul>
+            <li>Buka: <a href="https://cloud.google.com/free" target="_blank">https://cloud.google.com/free</a></li>
+            <li>Login dengan email: <strong>${email}</strong></li>
+            <li>Verifikasi menggunakan kartu aktif.</li>
+            <li>Akan mendapatkan $300 credit gratis selama 90 hari.</li>
+            <li>Gunakan layanan "Compute Engine" untuk buat VPS.</li>
+          </ul>
+        `;
+      } else if (platform === "aws") {
+        result = `
+          <h3>🟡 Amazon Web Services (AWS)</h3>
+          <ul>
+            <li>Kunjungi: <a href="https://aws.amazon.com/free/" target="_blank">https://aws.amazon.com/free/</a></li>
+            <li>Daftar dengan email: <strong>${email}</strong> dan isi negara: ${negara}</li>
+            <li>Verifikasi dengan kartu debit/kredit.</li>
+            <li>Pilih layanan "EC
